@@ -101,7 +101,7 @@ const CARDS = [
     icon: '🎯',
     iconBg: 'lime',
     title: 'Smart Outreach Campaigns',
-    desc: 'Multi-step sequences that run on autopilot — connection requests, follow-ups, InMails — with per-contact personalization baked in.',
+    desc: 'Personalized connection requests, follow-ups, and InMails — without getting flagged.',
     extra: 'bars',
   },
   {
@@ -116,8 +116,8 @@ const CARDS = [
     num: '03',
     icon: '📊',
     iconBg: 'dark',
-    title: 'Unified Analytics',
-    desc: 'Outreach reply rates, post impressions, profile views — one source of truth.',
+    title: 'Daily growth plan',
+    desc: 'Open the app, get your 15-minute LinkedIn checklist. Done.',
     extra: 'live',
   },
   {
@@ -132,8 +132,8 @@ const CARDS = [
     num: '05',
     icon: '✍️',
     iconBg: 'lime',
-    title: 'AI Content Generation',
-    desc: 'LinkedIn posts in your voice. Carousels, hooks, stories — trained on your style.',
+    title: 'White-label reports',
+    desc: 'Send clients polished LinkedIn growth reports with your logo — not ours.',
     extra: 'quote',
     limeCard: true,
   },
@@ -142,7 +142,7 @@ const CARDS = [
     icon: '🗓️',
     iconBg: 'dark',
     title: 'Content Scheduler',
-    desc: 'Plan weeks ahead. Optimal timing so every post lands at peak reach.',
+    desc: 'Generate posts in your voice and schedule a full month in under 10 minutes.',
     extra: 'calendar',
   },
 ]
@@ -155,11 +155,11 @@ export default function Features() {
       {/* Header */}
       <div className={`${styles.header} reveal`}>
         <div>
-          <div className="big-h">EVERY TOOL</div>
-          <div className="big-h outline">YOU NEED.</div>
+          <div className="big-h">FEATURES.</div>
+          <div className="big-h outline">Everything you need to win on LinkedIn.</div>
         </div>
         <p className={styles.headerSub}>
-          Six features. One platform. No tab switching, no context loss, no extra subscriptions.
+          One platform replaces your outreach tool, post scheduler, and reporting spreadsheet.
         </p>
       </div>
 

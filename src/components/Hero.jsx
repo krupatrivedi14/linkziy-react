@@ -85,9 +85,9 @@ export default function Hero() {
       {/* ── Description + CTAs ── */}
       <div className={`${styles.row} reveal reveal-d2`}>
         <p className={styles.desc}>
-          Linkziy is the only platform that combines LinkedIn outreach
-          automation with AI content generation — so founders, sales teams,
-          and agencies can grow pipeline and build brand from one dashboard.
+          Linkziy finds qualified leads, runs personalized outreach, and 
+          grows your personal brand — so you book more meetings without 
+          spending your day on LinkedIn.
         </p>
         <div className={styles.ctas}>
           <button
