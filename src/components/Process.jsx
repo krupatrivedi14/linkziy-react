@@ -2,10 +2,10 @@ import useReveal from '../hooks/useReveal'
 import styles from './Process.module.css'
 
 const STEPS = [
-  { num: '01', title: 'Connect LinkedIn',  desc: 'One-click OAuth connection. No passwords, no risk. Securely linked in under 60 seconds.' },
-  { num: '02', title: 'Define Your ICP',   desc: 'Filter by title, industry, seniority, or company size. Import your own CSV if you already have leads.' },
-  { num: '03', title: 'Launch Sequences', desc: 'AI writes personalized messages for each prospect. Set your schedule, hit launch, walk away.' },
-  { num: '04', title: 'Post & Grow',       desc: 'Generate and schedule your LinkedIn content simultaneously. Outbound and inbound, in parallel.' },
+  { num: '01', title: 'Connect LinkedIn',  desc: 'Secure, one-click setup.' },
+  { num: '02', title: 'Pick your goal',   desc: 'Leads, branding, or both.' },
+  { num: '03', title: 'Let Linkziy run', desc: 'AI handles outreach and content.' },
+  { num: '04', title: 'Track what works',       desc: 'Clear dashboards, no guesswork.' },
 ]
 
 export default function Process() {

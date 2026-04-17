@@ -2,12 +2,11 @@ import useReveal from '../hooks/useReveal'
 import styles from './SplitSection.module.css'
 
 const OUTREACH_ITEMS = [
-  'Multi-step sequence builder',
-  'AI-personalized icebreakers',
-  'Smart inbox management',
-  'CRM sync (HubSpot, Pipedrive, Salesforce)',
-  'White-label for agencies',
-]
+  'Book qualified calls from LinkedIn every week.',
+  'Cut outreach from hours to minutes a day.',
+  'Post weekly without staring at a blank page.',
+  'Turn LinkedIn into lead-gen, not a time sink.',
+  ]
 
 const CONTENT_ITEMS = [
   'Viral hook generator',
@@ -25,10 +24,10 @@ export default function SplitSection() {
       {/* Left — Outreach */}
       <div className={`${styles.left} reveal`}>
         <div className={styles.tagOut}>🚀 Outreach</div>
-        <h2 className={styles.heading}>PIPELINE.<br />ON AUTOPILOT.</h2>
+        <h2 className={styles.heading}>OUTCOMES.<br />ON AUTOPILOT.</h2>
         <p className={styles.desc}>
-          Run campaigns that feel human-crafted but scale like automation.
-          Multi-touch sequences from connection to close, with AI personalization at every step.
+          What changes when you use Linkziy
+          
         </p>
         <ul className={styles.list}>
           {OUTREACH_ITEMS.map((item) => (
