@@ -41,7 +41,7 @@ export default function SplitSection() {
       {/* Right — Content */}
       <div className={`${styles.right} reveal`}>
         <div className={styles.tagCont}>✨ Content</div>
-        <h2 className={styles.headingLight}>BUILT FOR<br />ATTRACTS.</h2>
+        <h2 className={styles.headingLight}>BUILT FOR<br />PEOPLE WHO SCALE.</h2>
         <p className={styles.descLight}>
           Whoever lives in LinkedIn DMs
         </p>
