@@ -9,11 +9,11 @@ const OUTREACH_ITEMS = [
   ]
 
 const CONTENT_ITEMS = [
-  'Viral hook generator',
-  'Carousel & document creator',
-  'Custom tone & style training',
-  'Content calendar & scheduler',
-  'Repurpose from any format',
+  'Founders : Closing your first 100 customers ',
+  'Sales teams : Hitting quota every month',
+  'Freelancers : Landing premium clients',
+  'Recruiters : Sourcing top talent faster',
+  'Agencies : Scaling client delivery',
 ]
 
 export default function SplitSection() {
@@ -24,9 +24,9 @@ export default function SplitSection() {
       {/* Left — Outreach */}
       <div className={`${styles.left} reveal`}>
         <div className={styles.tagOut}>🚀 Outreach</div>
-        <h2 className={styles.heading}>OUTCOMES.<br />ON AUTOPILOT.</h2>
+        <h2 className={styles.heading}>OUTCOMES.<br />What changes when you use Linkziy.</h2>
         <p className={styles.desc}>
-          What changes when you use Linkziy
+          The results you actually care about.
           
         </p>
         <ul className={styles.list}>
@@ -41,10 +41,9 @@ export default function SplitSection() {
       {/* Right — Content */}
       <div className={`${styles.right} reveal`}>
         <div className={styles.tagCont}>✨ Content</div>
-        <h2 className={styles.headingLight}>BRAND THAT<br />ATTRACTS.</h2>
+        <h2 className={styles.headingLight}>BUILT FOR<br />ATTRACTS.</h2>
         <p className={styles.descLight}>
-          The AI learns your voice and writes LinkedIn-native content that generates
-          inbound leads. Schedule a month of posts in an afternoon.
+          Whoever lives in LinkedIn DMs
         </p>
         <ul className={styles.listLight}>
           {CONTENT_ITEMS.map((item) => (
