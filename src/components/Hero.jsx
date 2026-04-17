@@ -62,8 +62,8 @@ export default function Hero() {
 
       {/* ── Badge row ── */}
       <div className={`${styles.badgeRow} reveal`}>
-        <span className={styles.badge}>All-in-One</span>
-        <span className={styles.badgeTxt}>LinkedIn Outreach + AI Content Platform</span>
+        <span className={styles.badge}>Now live</span>
+        <span className={styles.badgeTxt}>AI-powered LinkedIn growth</span>
       </div>
 
       {/* ── Main headline ── */}
@@ -74,9 +74,9 @@ export default function Hero() {
         Line 3 "LINKED."   — Solid lime green
       */}
       <h1 className={`${styles.headline} reveal reveal-d1`}>
-        <span className={styles.lineOutline}>OUTREACH.</span>
-        <span className={styles.lineSolid}>CONTENT.</span>
-        <span className={styles.lineLime}>LINKED.</span>
+        <span className={styles.lineOutline}>Turn LinkedIn.</span>
+        <span className={styles.lineSolid}>into your.</span>
+        <span className={styles.lineLime}>#1 pipeline —</span>
       </h1>
 
       {/* Dashed separator line */}

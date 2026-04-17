@@ -25,7 +25,7 @@ export default function Navbar() {
 
       <div className={styles.actions}>
         <button className={styles.btnLogin} onClick={() => window.location.href = '/login'}>
-          Log In
+          Sign in
         </button>
         <button className={styles.btnStart} onClick={() => window.location.href = '/signup'}>
           Start Free
