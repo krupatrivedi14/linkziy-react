@@ -1,0 +1,30 @@
+import styles from './Footer.module.css'
+
+const LINKS = ['Features', 'Pricing', 'Blog', 'Changelog', 'Privacy', 'Terms']
+
+export default function Footer() {
+  return (
+    <footer className={styles.footer} role="contentinfo">
+      <div className={styles.top}>
+        <a href="/" className={styles.logo}>
+          LINK<span className={styles.hl}>ZIY</span>
+        </a>
+        <nav className={styles.links} aria-label="Footer navigation">
+          {LINKS.map((label) => (
+            <a
+              key={label}
+              href={`/${label.toLowerCase()}`}
+              className={styles.link}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+      </div>
+      <div className={styles.bottom}>
+        <span className={styles.copy}>© 2025 Linkziy. All rights reserved.</span>
+        <span className={styles.copy}>14-day free trial · No credit card · Cancel anytime</span>
+      </div>
+    </footer>
+  )
+}

@@ -1,0 +1,30 @@
+.wrap {
+  background: var(--black);
+  padding: 13px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.track {
+  display: inline-flex;
+  animation: mq 22s linear infinite;
+}
+
+.track:hover { animation-play-state: paused; }
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-right: 36px;
+}
+
+.star {
+  color: var(--lime);
+  font-size: 16px;
+}
