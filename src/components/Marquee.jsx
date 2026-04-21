@@ -1,28 +1,26 @@
 import styles from './Marquee.module.css'
 
-const ITEMS = [
-  'LinkedIn Outreach',
-  'AI Content Generation',
-  'Smart Sequences',
-  'White Label Agency',
-  'CRM Integration',
-  'Viral Hook Generator',
-  'LinkedIn Safe Automation',
-  'Content Scheduler',
+const items = [
+  'LINKEDIN OUTREACH',
+  'AI CONTENT GENERATION',
+  'SMART SEQUENCES',
+  'WHITE LABEL AGENCY',
+  'CRM INTEGRATION',
+  'VIRAL HOOK GENERATOR',
+  'LINKEDIN SAFE AUTOMATION',
 ]
 
 export default function Marquee() {
-  // Duplicate for seamless loop
-  const allItems = [...ITEMS, ...ITEMS]
+  const loopItems = [...items, ...items]
 
   return (
-    <div className={styles.wrap} aria-hidden="true">
-      <div className={styles.track}>
-        {allItems.map((item, i) => (
-          <span key={i} className={styles.item}>
+    <div className={styles.marqueeWrap}>
+      <div className={styles.marqueeTrack}>
+        {loopItems.map((item, index) => (
+          <div key={index} className={styles.marqueeItem}>
             <span className={styles.star}>✦</span>
-            {item}
-          </span>
+            <span>{item}</span>
+          </div>
         ))}
       </div>
     </div>
