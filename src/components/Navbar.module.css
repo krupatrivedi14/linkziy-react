@@ -76,18 +76,18 @@
   content: '';
   position: absolute;
   bottom: 0;
-  left: 10%;
-  width: 80%;
-  height: 1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+
   background: linear-gradient(
     90deg,
-    transparent 0%,
-    rgba(200, 240, 0, 0.55) 40%,
-    rgba(200, 240, 0, 0.55) 60%,
-    transparent 100%
+    transparent,
+    rgba(180, 255, 0, 0.6),
+    transparent
   );
-  border-radius: 0 0 16px 16px;
-  pointer-events: none;
+
+  opacity: 0.7;
 }
 
 /* Scrolled state — more opaque */
