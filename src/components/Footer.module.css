@@ -19,6 +19,13 @@
   text-decoration: none;
 }
 
+.logoImg {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.2); /* makes it pop on dark bg */
+}
+
 .hl {
   background: var(--lime);
   color: var(--black);

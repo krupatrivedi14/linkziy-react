@@ -7,8 +7,9 @@ export default function Footer() {
     <footer className={styles.footer} role="contentinfo">
       <div className={styles.top}>
         <a href="/" className={styles.logo}>
-          LINK<span className={styles.hl}>ZIY</span>
+           <img src="/logo.png" alt="Linkziy Logo" className={styles.logoImg}/>
         </a>
+        
         <nav className={styles.links} aria-label="Footer navigation">
           {LINKS.map((label) => (
             <a
