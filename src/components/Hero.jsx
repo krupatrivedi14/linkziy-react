@@ -83,27 +83,36 @@ export default function Hero() {
       <div className={`${styles.dash} reveal reveal-d2`} aria-hidden="true" />
 
       {/* ── Description + CTAs ── */}
-      <div className={`${styles.row} reveal reveal-d2`}>
-        <p className={styles.desc}>
-          Linkziy finds qualified leads, runs personalized outreach, and 
-          grows your personal brand — so you book more meetings without 
-          spending your day on LinkedIn.
-        </p>
-        <div className={styles.ctas}>
-          <button
-            className={styles.btnCta}
-            onClick={() => window.location.href = '/signup'}
-          >
-            → Start Free Trial
-          </button>
-          <button
-            className={styles.btnGhost}
-            onClick={() => window.location.href = '/demo'}
-          >
-            Watch Demo
-          </button>
-        </div>
-      </div>
+      {/* ── Description + CTAs ── */}
+<div className={`${styles.row} reveal reveal-d2`}>
+  <p className={styles.desc}>
+    Linkziy finds qualified leads, runs personalized outreach, and 
+    grows your personal brand — so you book more meetings without 
+    spending your day on LinkedIn.
+  </p>
+
+  <div className={styles.ctas}>
+    
+    {/* Primary CTA */}
+    <button
+      className={styles.btnCta}
+      onClick={() => window.location.href = '/signup'}
+    >
+      <span className={styles.arrow}>→</span>
+      Start Free Trial
+    </button>
+
+    {/* 🔥 Updated Watch Demo */}
+    <button
+      className={styles.btnDemo}
+      onClick={() => window.location.href = '/demo'}
+    >
+      Watch Demo
+      <span className={styles.playIcon}>▶</span>
+    </button>
+
+  </div>
+</div>
 
       {/* ── Stats strip ── */}
       <div className={`${styles.statsStrip} reveal reveal-d3`} role="list">
