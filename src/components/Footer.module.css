@@ -7,29 +7,32 @@
 .top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* 🔥 KEY CHANGE (was center) */
   margin-bottom: 44px;
 }
 
+/* logo container */
 .logo {
-  font-family: var(--font-body);
-  font-weight: 900;
-  font-size: 22px;
-  color: var(--white);
+  display: flex;
+  align-items: center; /* keep icon + text aligned */
+  gap: 10px;
   text-decoration: none;
+  margin-top: 4px; /* fine adjustment */
 }
 
+/* logo image */
 .logoImg {
-  height: 34px;
+  height: 28px;
   width: auto;
   object-fit: contain;
-  filter: brightness(1.2); /* makes it pop on dark bg */
 }
+
+/* logo text */
 .logoText {
   font-family: var(--font-body);
   font-weight: 800;
-  font-size: 18px;
-  color: var(--white); /* THIS makes it white */
+  font-size: 16px;
+  color: var(--white);
   letter-spacing: 0.5px;
 }
 
