@@ -25,6 +25,13 @@
   object-fit: contain;
   filter: brightness(1.2); /* makes it pop on dark bg */
 }
+.logoText {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--white); /* THIS makes it white */
+  letter-spacing: 0.5px;
+}
 
 .hl {
   background: var(--lime);
