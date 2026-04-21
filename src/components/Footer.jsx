@@ -22,7 +22,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className={styles.bottom}>
-        <span className={styles.copy}>© 2025 Linkziy. All rights reserved.</span>
+        <span className={styles.copy}>© 2026 Linkziy. All rights reserved.</span>
         <span className={styles.copy}>14-day free trial · No credit card · Cancel anytime</span>
       </div>
     </footer>
