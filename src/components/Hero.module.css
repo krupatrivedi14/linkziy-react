@@ -170,6 +170,7 @@
 .btnGhost {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
 
   font-family: var(--font-body);
@@ -178,32 +179,32 @@
   letter-spacing: 2px;
   text-transform: uppercase;
 
-  padding: 15px 28px;
-  border-radius: 8px;
+  padding: 17px 30px;
+  min-height: 52px;
 
-  /* LIGHT VERSION OF PRIMARY BUTTON */
-  background: rgba(200, 240, 0, 0.12);
+  background: #eef6b8;
   color: var(--black);
 
-  border: 1px solid rgba(200, 240, 0, 0.35);
+  border: 1px solid rgba(200, 240, 0, 0.45);
+  border-radius: 8px;
 
-  cursor: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
 
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  box-shadow: 0 4px 18px rgba(200, 240, 0, 0.18);
 }
 
-/* hover */
 .btnGhost:hover {
   transform: translateY(-2px);
-
-  background: rgba(200, 240, 0, 0.22);
-
-  box-shadow: 0 6px 20px rgba(200, 240, 0, 0.25);
+  background: #f4facd;
+  box-shadow: 0 8px 24px rgba(200, 240, 0, 0.28);
 }
 
-/* click */
 .btnGhost:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 

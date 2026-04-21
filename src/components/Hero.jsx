@@ -104,12 +104,11 @@ export default function Hero() {
 
     {/* 🔥 Updated Watch Demo */}
     <button
-      className={styles.btnDemo}
-      onClick={() => window.location.href = '/demo'}
-    >
-      Watch Demo
-      <span className={styles.playIcon}>▶</span>
-    </button>
+  className={styles.btnGhost}
+  onClick={() => window.location.href = '/demo'}
+>
+  Watch Demo
+</button>
 
   </div>
 </div>
