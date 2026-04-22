@@ -1,63 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import Cursor from "../components/Cursor";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-/* ─── DATA ──────────────────────────────────────────────── */
-const PLANS = [
-  {
-    id: "starter",
-    tier: "Starter",
-    name: "Solo Grower",
-    desc: "For individuals building their personal brand from the ground up.",
-    monthly: 19,
-    annual: 13,
-    popular: false,
-    features: [
-      "1 LinkedIn profile connected",
-      "15 AI posts generated/month",
-      "Basic analytics dashboard",
-      "Post scheduler (30 slots)",
-    ],
-    unavailable: ["Competitor tracking", "Team workspace"],
-    btnLabel: "Get Started",
-  },
-  {
-    id: "pro",
-    tier: "Pro",
-    name: "Power Creator",
-    desc: "For professionals who want consistent, compounding LinkedIn growth.",
-    monthly: 49,
-    annual: 34,
-    popular: true,
-    features: [
-      "3 LinkedIn profiles",
-      "Unlimited AI posts",
-      "Advanced analytics & insights",
-      "Competitor tracking (5 rivals)",
-      "AI reply assistant",
-    ],
-    unavailable: ["Team workspace"],
-    btnLabel: "Start Free Trial",
-  },
-  {
-    id: "agency",
-    tier: "Agency",
-    name: "Scale Engine",
-    desc: "Built for agencies managing multiple client accounts at full scale.",
-    monthly: 149,
-    annual: 104,
-    popular: false,
-    features: [
-      "Unlimited LinkedIn profiles",
-      "Unlimited AI content",
-      "White-label client reports",
-      "Unlimited competitor tracking",
-      "Team workspace (20 seats)",
-      "Priority support & onboarding",
-    ],
-    unavailable: [],
-    btnLabel: "Contact Sales",
-  },
+/* ─── SHARED DATA ───────────────────────────────────────── */
+const TRUST_BADGES = [
+  { icon: "✦", label: "14-day free trial" },
+  { icon: "⚡", label: "Instant account access" },
+  { icon: "🔒", label: "Safe & secure checkout" },
 ];
 
 const REVIEWS = [
@@ -140,353 +90,473 @@ const FAQS = [
   },
 ];
 
-const TRUST_BADGES = [
-  { icon: "✦", label: "14-day free trial" },
-  { icon: "⚡", label: "Instant account access" },
-  { icon: "🔒", label: "Safe & secure checkout" },
+/* ─── PLAN DATA ─────────────────────────────────────────── */
+const TABS = [
+  { id: "outreach", label: "Outreach Automation" },
+  { id: "scheduling", label: "LinkedIn Scheduling" },
+  { id: "bundle", label: "All-in-One Bundle" },
+  { id: "addons", label: "Add-Ons" },
 ];
 
-/* ─── COMPONENTS ────────────────────────────────────────── */
+const PLANS_BY_TAB = {
+  outreach: [
+    {
+      id: "outreach-starter",
+      name: "Outreach Starter",
+      tier: "Starter",
+      badge: null,
+      badgeStyle: "starter",
+      desc: "Ideal for solo founders starting LinkedIn outreach with safe daily automation, unlimited sequences, and one sender account.",
+      monthly: 19,
+      annual: 13,
+      btnLabel: "Get Started",
+      category: "OUTREACH AUTOMATION",
+      subtitle: "Core platform pricing based on sender accounts.",
+      features: [
+        "outreach_automation",
+        "1 Sender account",
+        "0 LinkedIn accounts",
+        "Unlimited campaigns",
+        "Custom outreach flow builder",
+        "Automated follow-ups",
+        "Campaign analytics",
+        "Safe automation controls",
+      ],
+    },
+    {
+      id: "outreach-growth",
+      name: "Outreach Growth",
+      tier: "Pro",
+      badge: "POPULAR",
+      badgeStyle: "popular",
+      desc: "Built for growing teams that need higher daily automation capacity, multiple sender accounts, and scalable campaign execution.",
+      monthly: 49,
+      annual: 34,
+      btnLabel: "Start Free Trial",
+      category: "OUTREACH AUTOMATION",
+      subtitle: "Core platform pricing based on sender accounts.",
+      features: [
+        "outreach_automation",
+        "3 Sender accounts",
+        "0 LinkedIn accounts",
+        "Unlimited campaigns",
+        "Custom outreach flow builder",
+        "Automated follow-ups",
+        "Campaign analytics",
+        "Safe automation controls",
+      ],
+    },
+    {
+      id: "outreach-agency",
+      name: "Outreach Agency",
+      tier: "Agency",
+      badge: "AGENCY",
+      badgeStyle: "agency",
+      desc: "Designed for agencies and high-volume teams managing multi-client outreach with maximum sender capacity and advanced scale limits.",
+      monthly: 149,
+      annual: 104,
+      btnLabel: "Contact Sales",
+      category: "OUTREACH AUTOMATION",
+      subtitle: "Core platform pricing based on sender accounts.",
+      features: [
+        "outreach_automation",
+        "Unlimited sender accounts",
+        "0 LinkedIn accounts",
+        "Unlimited campaigns",
+        "Custom outreach flow builder",
+        "Automated follow-ups",
+        "Campaign analytics",
+        "Safe automation controls",
+        "White-label reports",
+        "Priority support & onboarding",
+      ],
+    },
+  ],
+  scheduling: [
+    {
+      id: "sched-creator",
+      name: "Scheduling Creator",
+      tier: "Starter",
+      badge: null,
+      badgeStyle: "starter",
+      desc: "Perfect for individual creators to plan, schedule, and publish LinkedIn content consistently from one account.",
+      monthly: 9,
+      annual: 6,
+      btnLabel: "Get Started",
+      category: "LINKEDIN SCHEDULING",
+      subtitle: "Pricing based on LinkedIn accounts connected.",
+      features: [
+        "linkedin_scheduling",
+        "0 Sender accounts",
+        "1 LinkedIn account",
+        "Unlimited post scheduling",
+        "Content calendar",
+        "Post analytics",
+        "Multi-account publishing",
+      ],
+    },
+    {
+      id: "sched-growth",
+      name: "Scheduling Growth",
+      tier: "Pro",
+      badge: "POPULAR",
+      badgeStyle: "popular",
+      desc: "Best for small teams managing content across multiple LinkedIn accounts with centralized planning and publishing.",
+      monthly: 15,
+      annual: 10,
+      btnLabel: "Start Free Trial",
+      category: "LINKEDIN SCHEDULING",
+      subtitle: "Pricing based on LinkedIn accounts connected.",
+      features: [
+        "linkedin_scheduling",
+        "0 Sender accounts",
+        "3 LinkedIn accounts",
+        "Unlimited post scheduling",
+        "Content calendar",
+        "Post analytics",
+        "Multi-account publishing",
+        "Team collaboration",
+      ],
+    },
+    {
+      id: "sched-agency",
+      name: "Scheduling Agency",
+      tier: "Agency",
+      badge: "AGENCY",
+      badgeStyle: "agency",
+      desc: "Built for agencies handling content operations across many LinkedIn accounts with streamlined scheduling workflows.",
+      monthly: 35,
+      annual: 24,
+      btnLabel: "Contact Sales",
+      category: "LINKEDIN SCHEDULING",
+      subtitle: "Pricing based on LinkedIn accounts connected.",
+      features: [
+        "linkedin_scheduling",
+        "0 Sender accounts",
+        "Unlimited LinkedIn accounts",
+        "Unlimited post scheduling",
+        "Content calendar",
+        "Post analytics",
+        "Multi-account publishing",
+        "White-label reports",
+      ],
+    },
+  ],
+  bundle: [
+    {
+      id: "bundle-pro",
+      name: "Linkziy Pro Suite",
+      tier: "Pro",
+      badge: "PRO",
+      badgeStyle: "pro",
+      desc: "All-in-one bundle combining outreach automation, scheduling, leads, and AI assistance for complete LinkedIn growth operations.",
+      monthly: 59,
+      annual: 41,
+      btnLabel: "Start Free Trial",
+      category: "ALL-IN-ONE BUNDLE",
+      subtitle: "Everything in one plan for the complete Linkziy stack.",
+      features: [
+        "ai_assistant",
+        "outreach_automation",
+        "linkedin_scheduling",
+        "1 LinkedIn sender account",
+        "Scheduling for 1 LinkedIn account",
+        "600 lead credits per month",
+        "300 AI credits",
+        "Campaign analytics",
+      ],
+    },
+  ],
+  addons: [
+    {
+      id: "addon-wlr",
+      name: "White Label Reports",
+      tier: "Add-On",
+      badge: "ADD-ON",
+      badgeStyle: "addon",
+      desc: "Agency-focused add-on enabling branded client reporting, and professional performance presentation.",
+      monthly: 29,
+      annual: 29,
+      btnLabel: "Add to Plan",
+      category: "ADD-ONS",
+      subtitle: "Scale sender capacity and unlock agency-ready reporting.",
+      features: [
+        "Upgrade without switching plans",
+        "Pay only for what you need",
+        "Instant scalability for teams",
+      ],
+    },
+    {
+      id: "addon-leads1000",
+      name: "Extra Leads 1000",
+      tier: "Add-On",
+      badge: "ADD-ON",
+      badgeStyle: "addon",
+      desc: "Top-up add-on for 1000 additional verified leads. Best value pack for high-volume prospecting.",
+      monthly: 17,
+      annual: 17,
+      btnLabel: "Add to Plan",
+      category: "ADD-ONS",
+      subtitle: "Top up your lead credits instantly.",
+      features: [
+        "1000 verified lead credits",
+        "Instant activation",
+        "No plan change required",
+        "Use across all campaigns",
+      ],
+    },
+    {
+      id: "addon-leads500",
+      name: "Extra Leads 500",
+      tier: "Add-On",
+      badge: "ADD-ON",
+      badgeStyle: "addon",
+      desc: "Top-up add-on for 500 additional verified leads. One-time credit pack to scale campaigns instantly.",
+      monthly: 11,
+      annual: 11,
+      btnLabel: "Add to Plan",
+      category: "ADD-ONS",
+      subtitle: "Top up your lead credits instantly.",
+      features: [
+        "500 verified lead credits",
+        "Instant activation",
+        "No plan change required",
+        "Use across all campaigns",
+      ],
+    },
+    {
+      id: "addon-senders10",
+      name: "Additional Senders +10",
+      tier: "Add-On",
+      badge: "ADD-ON",
+      badgeStyle: "addon",
+      desc: "Adds 10 extra LinkedIn sender accounts for agencies and high-volume outreach operations.",
+      monthly: 135,
+      annual: 135,
+      btnLabel: "Add to Plan",
+      category: "ADD-ONS",
+      subtitle: "Expand your outreach sender capacity.",
+      features: [
+        "10 additional sender accounts",
+        "Upgrade without switching plans",
+        "Instant scalability for teams",
+        "Full automation controls",
+      ],
+    },
+    {
+      id: "addon-senders5",
+      name: "Additional Senders +5",
+      tier: "Add-On",
+      badge: "ADD-ON",
+      badgeStyle: "addon",
+      desc: "Adds 5 extra LinkedIn sender accounts for growing teams running multi-account outreach.",
+      monthly: 75,
+      annual: 75,
+      btnLabel: "Add to Plan",
+      category: "ADD-ONS",
+      subtitle: "Expand your outreach sender capacity.",
+      features: [
+        "5 additional sender accounts",
+        "Upgrade without switching plans",
+        "Instant scalability for teams",
+        "Full automation controls",
+      ],
+    },
+    {
+      id: "addon-sender1",
+      name: "Additional Sender +1",
+      tier: "Add-On",
+      badge: "ADD-ON",
+      badgeStyle: "addon",
+      desc: "Adds 1 extra LinkedIn sender account to your workspace for expanded outreach capacity.",
+      monthly: 17,
+      annual: 17,
+      btnLabel: "Add to Plan",
+      category: "ADD-ONS",
+      subtitle: "Expand your outreach sender capacity.",
+      features: [
+        "1 additional sender account",
+        "Upgrade without switching plans",
+        "Instant scalability for teams",
+        "Full automation controls",
+      ],
+    },
+  ],
+};
+
+/* ─── UI COMPONENTS ─────────────────────────────────────── */
 function BillingToggle({ annual, onToggle }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-      <span
-        style={{
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: "0.8px",
-          textTransform: "uppercase",
-          color: !annual ? "#0a0a0a" : "#999",
-        }}
-      >
+      <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: !annual ? "#0a0a0a" : "#999" }}>
         Monthly
       </span>
-
-      <label
-        style={{
-          position: "relative",
-          width: 46,
-          height: 25,
-          cursor: "pointer",
-          display: "inline-block",
-          flexShrink: 0,
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={annual}
-          onChange={onToggle}
-          style={{ opacity: 0, width: 0, height: 0 }}
-        />
-        <span
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: annual ? "#c8f000" : "#ccc",
-            borderRadius: 100,
-            transition: "background .3s",
-          }}
-        >
-          <span
-            style={{
-              position: "absolute",
-              width: 19,
-              height: 19,
-              left: 3,
-              top: 3,
-              background: "#0a0a0a",
-              borderRadius: "50%",
-              transform: annual ? "translateX(21px)" : "none",
-              transition: "transform .3s",
-            }}
-          />
+      <label style={{ position: "relative", width: 46, height: 25, cursor: "pointer", display: "inline-block", flexShrink: 0 }}>
+        <input type="checkbox" checked={annual} onChange={onToggle} style={{ opacity: 0, width: 0, height: 0 }} />
+        <span style={{ position: "absolute", inset: 0, background: annual ? "#c8f000" : "#ccc", borderRadius: 100, transition: "background .3s" }}>
+          <span style={{ position: "absolute", width: 19, height: 19, left: 3, top: 3, background: "#0a0a0a", borderRadius: "50%", transform: annual ? "translateX(21px)" : "none", transition: "transform .3s" }} />
         </span>
       </label>
-
-      <span
-        style={{
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: "0.8px",
-          textTransform: "uppercase",
-          color: annual ? "#0a0a0a" : "#999",
-        }}
-      >
+      <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: annual ? "#0a0a0a" : "#999" }}>
         Annual
       </span>
-
-      <span
-        style={{
-          fontSize: 10,
-          fontWeight: 800,
-          letterSpacing: "0.8px",
-          textTransform: "uppercase",
-          background: "#0a0a0a",
-          color: "#c8f000",
-          padding: "3px 8px",
-          borderRadius: 4,
-        }}
-      >
+      <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.8px", textTransform: "uppercase", background: "#0a0a0a", color: "#c8f000", padding: "3px 8px", borderRadius: 4 }}>
         Save 30%
       </span>
     </div>
   );
 }
 
-function PlanCard({ plan, annual, selected, onClick }) {
+function PlanListCard({ plan, annual, selected, onClick }) {
   const price = annual ? plan.annual : plan.monthly;
 
   return (
     <div
       onClick={onClick}
+      className="plan-row"
       style={{
-        background: plan.popular ? "#0a0a0a" : "#fff",
-        border: `2px solid ${selected ? "#c8f000" : plan.popular ? "#c8f000" : "#e0ddd5"}`,
-        borderRadius: 14,
-        padding: "24px 20px",
-        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        background: selected ? "#f7fae5" : "#fff",
+        border: `1.5px solid ${selected ? "#c8f000" : "#e8e5de"}`,
+        borderRadius: 12,
+        padding: "16px 18px",
         cursor: "pointer",
-        boxShadow: selected ? "0 0 0 3px rgba(200,240,0,0.25)" : "none",
-        transition: "border-color .2s, box-shadow .2s",
+        transition: "all .18s",
+        boxShadow: selected ? "0 0 0 2px rgba(200,240,0,0.2)" : "none",
       }}
     >
-      {plan.popular && (
-        <div
-          style={{
-            position: "absolute",
-            top: -12,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "#c8f000",
-            color: "#0a0a0a",
-            fontSize: 9.5,
-            fontWeight: 800,
-            letterSpacing: "1.2px",
-            textTransform: "uppercase",
-            padding: "3px 12px",
-            borderRadius: 100,
-            whiteSpace: "nowrap",
-          }}
-        >
-          ★ Most Popular
+      <div style={{ width: 44, height: 44, borderRadius: 10, background: "#eef6c4", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, color: "#8aad00" }}>
+        ✦
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 800, fontSize: 14.5, color: "#0a0a0a", marginBottom: 3 }}>
+          {plan.name}
+          {plan.badge && (
+            <span
+              style={{
+                display: "inline-block",
+                fontSize: 9,
+                fontWeight: 800,
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                padding: "2px 8px",
+                borderRadius: 100,
+                marginLeft: 7,
+                verticalAlign: "middle",
+                background: "#0a0a0a",
+                color: plan.badgeStyle === "addon" ? "#c8f000" : "#fff",
+              }}
+            >
+              {plan.badge}
+            </span>
+          )}
         </div>
-      )}
 
-      <span
-        style={{
-          display: "inline-block",
-          fontSize: 9.5,
-          fontWeight: 800,
-          letterSpacing: "1.5px",
-          textTransform: "uppercase",
-          padding: "3px 9px",
-          borderRadius: 4,
-          marginBottom: 10,
-          ...(plan.popular
-            ? { background: "#c8f000", color: "#0a0a0a" }
-            : plan.id === "agency"
-            ? { background: "#1a1a1a", color: "#c8f000", border: "1px solid #333" }
-            : { background: "#f4f2e8", color: "#666", border: "1px solid #e0ddd5" }),
-        }}
-      >
-        {plan.tier}
-      </span>
+        <p style={{ fontSize: 12, color: "#666", lineHeight: 1.45, margin: 0, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          {plan.desc}
+        </p>
+      </div>
 
-      <div
-        style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: 24,
-          letterSpacing: 0.5,
-          color: plan.popular ? "#fff" : "#0a0a0a",
-          marginBottom: 5,
-        }}
-      >
+      <div style={{ textAlign: "right", flexShrink: 0 }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 38, lineHeight: 1, color: "#0a0a0a" }}>
+          ${price}
+        </div>
+        <div style={{ fontSize: 9.5, color: "#aaa", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+          Per Month
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailPanel({ plan, annual }) {
+  if (!plan) return null;
+  const price = annual ? plan.annual : plan.monthly;
+
+  return (
+    <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 14, padding: "22px 20px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}>
+        <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "1.2px", textTransform: "uppercase", background: "#f4f2e8", color: "#666", border: "1.5px solid #e0ddd5", padding: "3px 10px", borderRadius: 100 }}>
+          {plan.category}
+        </span>
+      </div>
+
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: "#0a0a0a", letterSpacing: 0.5, marginBottom: 5 }}>
         {plan.name}
       </div>
 
-      <p
-        style={{
-          fontSize: 12,
-          color: plan.popular ? "#777" : "#666",
-          lineHeight: 1.5,
-          marginBottom: 16,
-          minHeight: 36,
-        }}
-      >
-        {plan.desc}
+      <p style={{ fontSize: 12.5, color: "#777", lineHeight: 1.55, marginBottom: 18 }}>
+        {plan.subtitle}
       </p>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          gap: 3,
-          paddingBottom: 14,
-          marginBottom: 14,
-          borderBottom: `1px solid ${plan.popular ? "#1e1e1e" : "#ede9e0"}`,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 13,
-            fontWeight: 700,
-            color: plan.popular ? "#666" : "#aaa",
-            marginBottom: 5,
-          }}
-        >
-          $
-        </span>
-        <span
-          style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: 46,
-            lineHeight: 1,
-            color: plan.popular ? "#c8f000" : "#0a0a0a",
-          }}
-        >
-          {price}
-        </span>
-        <span style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>/mo</span>
-      </div>
-
-      <ul
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: "0 0 18px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
+      <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 9 }}>
         {plan.features.map((f) => (
-          <li
-            key={f}
-            style={{
-              display: "flex",
-              gap: 8,
-              alignItems: "flex-start",
-              fontSize: 12,
-              color: plan.popular ? "#ccc" : "#333",
-              lineHeight: 1.4,
-            }}
-          >
-            <span
-              style={{
-                width: 15,
-                height: 15,
-                borderRadius: "50%",
-                flexShrink: 0,
-                marginTop: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: plan.popular ? "#c8f000" : plan.id === "agency" ? "#1a1a1a" : "#f0ede6",
-                border: plan.id === "agency" ? "1px solid #333" : "none",
-              }}
-            >
+          <li key={f} style={{ display: "flex", alignItems: "center", gap: 9 }}>
+            <span style={{ width: 18, height: 18, borderRadius: "50%", background: "#eef6c4", border: "1.5px solid #b8e000", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <svg width="7" height="6" viewBox="0 0 9 7" fill="none">
-                <path
-                  d="M1 3.5l2 2L8 1"
-                  stroke={plan.popular ? "#0a0a0a" : plan.id === "agency" ? "#c8f000" : "#555"}
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <path d="M1 3.5l2 2L8 1" stroke="#5a8a00" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
-            {f}
-          </li>
-        ))}
-
-        {plan.unavailable.map((f) => (
-          <li
-            key={f}
-            style={{
-              display: "flex",
-              gap: 8,
-              alignItems: "flex-start",
-              fontSize: 12,
-              color: "#bbb",
-              lineHeight: 1.4,
-              opacity: 0.5,
-            }}
-          >
-            <span
-              style={{
-                width: 15,
-                height: 15,
-                borderRadius: "50%",
-                flexShrink: 0,
-                marginTop: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "transparent",
-                border: `1px solid ${plan.popular ? "#333" : "#ddd"}`,
-              }}
-            >
-              <svg width="7" height="6" viewBox="0 0 9 7" fill="none">
-                <path
-                  d="M1 3.5l2 2L8 1"
-                  stroke="#ccc"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            {f}
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#222" }}>{f}</span>
           </li>
         ))}
       </ul>
 
-      <a
-        href="#"
-        style={{
-          display: "block",
-          textAlign: "center",
-          padding: "11px 0",
-          borderRadius: 8,
-          fontSize: 11,
-          fontWeight: 800,
-          letterSpacing: "1px",
-          textTransform: "uppercase",
-          textDecoration: "none",
-          ...(plan.popular
-            ? { background: "#c8f000", color: "#0a0a0a" }
-            : { background: "transparent", color: "#0a0a0a", border: "1.5px solid #d0ccc4" }),
-        }}
-      >
-        {plan.btnLabel} →
-      </a>
+      <div style={{ borderTop: "1.5px dashed #e8e5de", paddingTop: 16 }}>
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#aaa", marginBottom: 2 }}>
+            No credit card required
+          </div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "#0a0a0a", lineHeight: 1 }}>
+            ${price}/month
+          </div>
+        </div>
+
+        <a
+          href="#"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#c8f000",
+            color: "#0a0a0a",
+            fontWeight: 800,
+            fontSize: 11,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            padding: "11px 0",
+            borderRadius: 8,
+            textDecoration: "none",
+          }}
+        >
+          {plan.btnLabel} →
+        </a>
+      </div>
     </div>
   );
 }
 
 function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
-  const plan = PLANS.find((p) => p.id === selectedPlan) || PLANS[1];
-  const price = annual ? plan.annual : plan.monthly;
+  const price = annual ? selectedPlan.annual : selectedPlan.monthly;
+
+  const tabKey = Object.keys(PLANS_BY_TAB).find((tab) =>
+    PLANS_BY_TAB[tab].some((p) => p.id === selectedPlan.id)
+  );
+  const siblingPlans = PLANS_BY_TAB[tabKey] || [];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 , width : "100%" }}>
       <div style={{ background: "#fff", border: "1.5px solid #e0ddd5", borderRadius: 14, padding: "20px 18px" }}>
         <div style={{ marginBottom: 14 }}>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              color: "#aaa",
-              marginBottom: 7,
-            }}
-          >
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#aaa", marginBottom: 7 }}>
             Select Plan
           </div>
 
           <div style={{ display: "flex", gap: 5 }}>
-            {PLANS.map((p) => (
+            {siblingPlans.map((p) => (
               <button
                 key={p.id}
                 onClick={() => onSelectPlan(p.id)}
@@ -494,8 +564,8 @@ function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
                   flex: 1,
                   padding: "7px 2px",
                   borderRadius: 7,
-                  border: `1.5px solid ${selectedPlan === p.id ? "#c8f000" : "#e8e5de"}`,
-                  background: selectedPlan === p.id ? "#c8f000" : "#f9f8f4",
+                  border: `1.5px solid ${selectedPlan.id === p.id ? "#c8f000" : "#e8e5de"}`,
+                  background: selectedPlan.id === p.id ? "#c8f000" : "#f9f8f4",
                   color: "#0a0a0a",
                   fontSize: 10,
                   fontWeight: 800,
@@ -513,24 +583,12 @@ function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
 
         <div style={{ borderTop: "1px solid #f0ede6", paddingTop: 14, marginBottom: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#0a0a0a" }}>{plan.name}</span>
-            <span
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: 26,
-                color: "#0a0a0a",
-                lineHeight: 1,
-              }}
-            >
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#0a0a0a" }}>
+              {selectedPlan.name}
+            </span>
+            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: "#0a0a0a", lineHeight: 1 }}>
               ${price}
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: "#888",
-                  fontFamily: "'Barlow', sans-serif",
-                }}
-              >
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#888", fontFamily: "'Barlow', sans-serif" }}>
                 /mo
               </span>
             </span>
@@ -540,178 +598,41 @@ function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 14,
-            padding: "9px 11px",
-            background: "#f9f8f4",
-            borderRadius: 8,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 10.5,
-              fontWeight: 700,
-              color: !annual ? "#0a0a0a" : "#aaa",
-              textTransform: "uppercase",
-              letterSpacing: "0.5px",
-            }}
-          >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "9px 11px", background: "#f9f8f4", borderRadius: 8 }}>
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: !annual ? "#0a0a0a" : "#aaa", textTransform: "uppercase", letterSpacing: "0.5px" }}>
             Monthly
           </span>
-
-          <label
-            style={{
-              position: "relative",
-              width: 36,
-              height: 20,
-              cursor: "pointer",
-              display: "inline-block",
-              flexShrink: 0,
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={annual}
-              onChange={onToggle}
-              style={{ opacity: 0, width: 0, height: 0 }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: annual ? "#c8f000" : "#ccc",
-                borderRadius: 100,
-                transition: "background .3s",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  width: 14,
-                  height: 14,
-                  left: 3,
-                  top: 3,
-                  background: "#0a0a0a",
-                  borderRadius: "50%",
-                  transform: annual ? "translateX(16px)" : "none",
-                  transition: "transform .3s",
-                }}
-              />
+          <label style={{ position: "relative", width: 36, height: 20, cursor: "pointer", display: "inline-block", flexShrink: 0 }}>
+            <input type="checkbox" checked={annual} onChange={onToggle} style={{ opacity: 0, width: 0, height: 0 }} />
+            <span style={{ position: "absolute", inset: 0, background: annual ? "#c8f000" : "#ccc", borderRadius: 100, transition: "background .3s" }}>
+              <span style={{ position: "absolute", width: 14, height: 14, left: 3, top: 3, background: "#0a0a0a", borderRadius: "50%", transform: annual ? "translateX(16px)" : "none", transition: "transform .3s" }} />
             </span>
           </label>
-
-          <span
-            style={{
-              fontSize: 10.5,
-              fontWeight: 700,
-              color: annual ? "#0a0a0a" : "#aaa",
-              textTransform: "uppercase",
-              letterSpacing: "0.5px",
-            }}
-          >
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: annual ? "#0a0a0a" : "#aaa", textTransform: "uppercase", letterSpacing: "0.5px" }}>
             Annual
           </span>
-
           {annual && (
-            <span
-              style={{
-                marginLeft: "auto",
-                fontSize: 9,
-                fontWeight: 800,
-                background: "#0a0a0a",
-                color: "#c8f000",
-                padding: "2px 6px",
-                borderRadius: 3,
-                letterSpacing: "0.5px",
-              }}
-            >
+            <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, background: "#0a0a0a", color: "#c8f000", padding: "2px 6px", borderRadius: 3, letterSpacing: "0.5px" }}>
               −30%
             </span>
           )}
         </div>
 
-        <a
-          href="#"
-          style={{
-            display: "block",
-            textAlign: "center",
-            background: "#c8f000",
-            color: "#0a0a0a",
-            fontWeight: 800,
-            fontSize: 11.5,
-            letterSpacing: "1px",
-            textTransform: "uppercase",
-            padding: "12px 0",
-            borderRadius: 8,
-            textDecoration: "none",
-            marginBottom: 8,
-          }}
-        >
+        <a href="#" style={{ display: "block", textAlign: "center", background: "#c8f000", color: "#0a0a0a", fontWeight: 800, fontSize: 11.5, letterSpacing: "1px", textTransform: "uppercase", padding: "12px 0", borderRadius: 8, textDecoration: "none", marginBottom: 8 }}>
           ▶ Start Free Trial
         </a>
-
-        <a
-          href="#"
-          style={{
-            display: "block",
-            textAlign: "center",
-            background: "#0a0a0a",
-            color: "#fff",
-            fontWeight: 800,
-            fontSize: 11.5,
-            letterSpacing: "1px",
-            textTransform: "uppercase",
-            padding: "12px 0",
-            borderRadius: 8,
-            textDecoration: "none",
-          }}
-        >
+        <a href="#" style={{ display: "block", textAlign: "center", background: "#0a0a0a", color: "#fff", fontWeight: 800, fontSize: 11.5, letterSpacing: "1px", textTransform: "uppercase", padding: "12px 0", borderRadius: 8, textDecoration: "none" }}>
           ▶ Get Started Now
         </a>
-
-        <p
-          style={{
-            fontSize: 10.5,
-            color: "#bbb",
-            textAlign: "center",
-            marginTop: 10,
-            lineHeight: 1.5,
-          }}
-        >
+        <p style={{ fontSize: 10.5, color: "#bbb", textAlign: "center", marginTop: 10, lineHeight: 1.5 }}>
           14-day free trial · No credit card required
         </p>
       </div>
 
-      <div
-        style={{
-          background: "#fff",
-          border: "1.5px solid #e0ddd5",
-          borderRadius: 14,
-          padding: "16px 18px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-        }}
-      >
+      <div style={{ background: "#fff", border: "1.5px solid #e0ddd5", borderRadius: 14, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
         {TRUST_BADGES.map(({ icon, label }) => (
           <div key={label} style={{ display: "flex", alignItems: "center", gap: 11 }}>
-            <span
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                background: "#f4f2e8",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 15,
-                flexShrink: 0,
-              }}
-            >
+            <span style={{ width: 36, height: 36, borderRadius: "50%", background: "#f4f2e8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>
               {icon}
             </span>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#333" }}>{label}</span>
@@ -725,15 +646,7 @@ function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
 function Reviews() {
   return (
     <div style={{ marginBottom: 48 }}>
-      <h2
-        style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: 30,
-          letterSpacing: 0.5,
-          color: "#c8f000",
-          marginBottom: 4,
-        }}
-      >
+      <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000", marginBottom: 4 }}>
         What our users say
       </h2>
       <p style={{ fontSize: 13, color: "#777", marginBottom: 22 }}>
@@ -743,47 +656,16 @@ function Reviews() {
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         {REVIEWS.map(({ initials, color, name, date, text }) => (
           <div key={name} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-            <span
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: color,
-                flexShrink: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 800,
-                fontSize: 15,
-                color: "#fff",
-              }}
-            >
+            <span style={{ width: 40, height: 40, borderRadius: "50%", background: color, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 15, color: "#fff" }}>
               {initials}
             </span>
-
             <div>
               <div style={{ fontSize: 13.5, color: "#333", lineHeight: 1.65, marginBottom: 5 }}>
-                <span
-                  style={{
-                    fontSize: 18,
-                    color: "#c8f000",
-                    lineHeight: 0,
-                    verticalAlign: "middle",
-                    marginRight: 3,
-                  }}
-                >
+                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginRight: 3 }}>
                   "
                 </span>
                 {text}
-                <span
-                  style={{
-                    fontSize: 18,
-                    color: "#c8f000",
-                    lineHeight: 0,
-                    verticalAlign: "middle",
-                    marginLeft: 3,
-                  }}
-                >
+                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginLeft: 3 }}>
                   "
                 </span>
               </div>
@@ -801,33 +683,18 @@ function Reviews() {
 function Promises() {
   return (
     <div style={{ marginBottom: 48 }}>
-      <h2
-        style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: 30,
-          letterSpacing: 0.5,
-          color: "#c8f000",
-          marginBottom: 18,
-        }}
-      >
+      <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000", marginBottom: 18 }}>
         Our promise to you
       </h2>
-
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {PROMISES.map(({ title, body }) => (
-          <div
-            key={title}
-            style={{
-              background: "#fff",
-              border: "1.5px solid #e8e5de",
-              borderRadius: 11,
-              padding: "20px 22px",
-            }}
-          >
+          <div key={title} style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 11, padding: "20px 22px" }}>
             <div style={{ fontWeight: 800, fontSize: 15, color: "#0a0a0a", marginBottom: 7 }}>
               {title}
             </div>
-            <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.7 }}>{body}</p>
+            <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.7 }}>
+              {body}
+            </p>
           </div>
         ))}
       </div>
@@ -839,40 +706,15 @@ function FaqItem({ q, a }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div
-      onClick={() => setOpen((o) => !o)}
-      style={{
-        background: open ? "#f7fae5" : "#0a0a0a",
-        border: `1.5px solid ${open ? "#c8f000" : "#1a1a1a"}`,
-        borderRadius: 9,
-        padding: "14px 16px",
-        cursor: "pointer",
-        transition: "background .2s, border-color .2s",
-      }}
-    >
+    <div onClick={() => setOpen((o) => !o)} style={{ background: open ? "#f7fae5" : "#0a0a0a", border: `1.5px solid ${open ? "#c8f000" : "#1a1a1a"}`, borderRadius: 9, padding: "14px 16px", cursor: "pointer", transition: "background .2s, border-color .2s" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 700, color: open ? "#0a0a0a" : "#fff" }}>{q}</span>
-        <span
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: "50%",
-            flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: open ? "#c8f000" : "transparent",
-            border: `1.5px solid ${open ? "#c8f000" : "#444"}`,
-            color: open ? "#0a0a0a" : "#777",
-            fontSize: 13,
-            transform: open ? "rotate(45deg)" : "none",
-            transition: "all .22s",
-          }}
-        >
+        <span style={{ fontSize: 13.5, fontWeight: 700, color: open ? "#0a0a0a" : "#fff" }}>
+          {q}
+        </span>
+        <span style={{ width: 22, height: 22, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#c8f000" : "transparent", border: `1.5px solid ${open ? "#c8f000" : "#444"}`, color: open ? "#0a0a0a" : "#777", fontSize: 13, transform: open ? "rotate(45deg)" : "none", transition: "all .22s" }}>
           +
         </span>
       </div>
-
       {open && <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.65, marginTop: 10 }}>{a}</p>}
     </div>
   );
@@ -882,22 +724,13 @@ function FaqSection() {
   return (
     <div style={{ marginBottom: 48 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 16, gap: 12, flexWrap: "wrap" }}>
-        <h2
-          style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: 30,
-            letterSpacing: 0.5,
-            color: "#c8f000",
-          }}
-        >
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000" }}>
           FAQs
         </h2>
-
         <a href="#" style={{ fontSize: 12.5, color: "#c8f000", textDecoration: "none", fontWeight: 700 }}>
           See all FAQs →
         </a>
       </div>
-
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         {FAQS.map(({ q, a }) => (
           <FaqItem key={q} q={q} a={a} />
@@ -919,31 +752,12 @@ function QuickStats() {
 
   return (
     <div style={{ marginBottom: 48 }}>
-      <h2
-        style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: 30,
-          letterSpacing: 0.5,
-          color: "#c8f000",
-          marginBottom: 16,
-        }}
-      >
+      <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000", marginBottom: 16 }}>
         Quick stats
       </h2>
-
       <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 11, overflow: "hidden" }}>
         {rows.map(([label, value], i) => (
-          <div
-            key={label}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "12px 18px",
-              borderBottom: i < rows.length - 1 ? "1px dotted #e8e5de" : "none",
-              background: i % 2 === 0 ? "#fff" : "#faf9f5",
-            }}
-          >
+          <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 18px", borderBottom: i < rows.length - 1 ? "1px dotted #e8e5de" : "none", background: i % 2 === 0 ? "#fff" : "#faf9f5" }}>
             <span style={{ fontSize: 13.5, color: "#555" }}>{label}</span>
             <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0a0a0a" }}>{value}</span>
           </div>
@@ -956,120 +770,148 @@ function QuickStats() {
 /* ─── PAGE ──────────────────────────────────────────────── */
 export default function Pricing() {
   const [annual, setAnnual] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState("pro");
+  const [activeTab, setActiveTab] = useState("outreach");
+  const [selectedPlanId, setSelectedPlanId] = useState("outreach-starter");
+
+  const currentPlans = PLANS_BY_TAB[activeTab] || [];
+
+  const selectedPlan = useMemo(() => {
+    return currentPlans.find((p) => p.id === selectedPlanId) || currentPlans[0];
+  }, [currentPlans, selectedPlanId]);
+
+  function handleTabChange(tabId) {
+    setActiveTab(tabId);
+    const first = PLANS_BY_TAB[tabId]?.[0];
+    if (first) setSelectedPlanId(first.id);
+  }
 
   return (
     <>
+      <Cursor />
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Barlow', sans-serif; background: #f4f2e8; color: #0a0a0a; overflow-x: hidden; }
         a:hover { opacity: 0.85; }
 
-        @media (max-width: 1100px) {
-          .pricing-layout {
+        .pricing-outer {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 340px;
+          gap: 32px;
+          align-items: start;
+        }
+
+       .right-sidebar-column {
+         position: relative;
+         align-self: stretch;
+         min-height: 100%;
+        }
+
+        .sidebar-sticky {
+          position: sticky;
+          top: 110px;
+        }
+
+        .sidebar-shell {
+          width: 100%;
+        }
+
+        .plans-inner {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 300px;
+          gap: 14px;
+          align-items: start;
+          margin-bottom: 44px;
+        }
+
+        .tab-pill {
+          padding: 9px 16px;
+          border-radius: 100px;
+          border: 1.5px solid #d0ccc4;
+          background: transparent;
+          color: #555;
+          font-size: 12.5px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all .18s;
+        }
+
+        .tab-pill.active {
+          background: #0a0a0a;
+          color: #fff;
+          border-color: #0a0a0a;
+        }
+
+        .plan-row:hover {
+          border-color: #c8f000 !important;
+          background: #fafde8 !important;
+        }
+
+      @media (max-width: 1100px) {
+          .pricing-outer {
             grid-template-columns: 1fr !important;
           }
 
-          .pricing-cards {
+          .plans-inner {
             grid-template-columns: 1fr !important;
           }
 
-          .pricing-sidebar {
+          .right-sidebar-column {
             min-height: auto !important;
           }
 
-          .pricing-sidebar-sticky {
+          .sidebar-sticky {
             position: static !important;
             top: auto !important;
           }
-        }
+}
       `}</style>
 
-      <div style={{ minHeight: "100vh", background: "#f4f2e8", fontFamily: "'Barlow', sans-serif" }}>
+      <div style={{ minHeight: "100vh", background: "#f4f2e8" }}>
         <Navbar />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 32px 0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "140px 32px 40px" }}>
           <div style={{ marginBottom: 28 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
-              <span
-                style={{
-                  background: "#c8f000",
-                  color: "#0a0a0a",
-                  fontSize: 10,
-                  fontWeight: 800,
-                  letterSpacing: "1.5px",
-                  textTransform: "uppercase",
-                  padding: "4px 10px",
-                  borderRadius: 4,
-                }}
-              >
-                💰 Pricing
-              </span>
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: "1px",
-                  textTransform: "uppercase",
-                  color: "#888",
-                }}
-              >
-                Simple &amp; Transparent
-              </span>
-            </div>
-
-            <h1
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: "clamp(2.8rem, 6vw, 5.5rem)",
-                letterSpacing: 1,
-                color: "#0a0a0a",
-                lineHeight: 0.95,
-                marginBottom: 12,
-              }}
-            >
-              Pick Your <span style={{ color: "#c8f000" }}>Growth</span>{" "}
-              <span style={{ WebkitTextStroke: "2px #0a0a0a", color: "transparent" }}>Plan.</span>
+            <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(2.8rem, 6vw, 5.5rem)" }}>
+              Pick Your <span style={{ color: "#c8f000" }}>Growth</span> Plan
             </h1>
-
-            <p style={{ fontSize: 14, color: "#666", lineHeight: 1.65, maxWidth: 480 }}>
-              No hidden fees. No contracts. Just results. Start free for 14 days — no credit card required.
+            <p style={{ color: "#666" }}>
+              No hidden fees. Start free for 14 days.
             </p>
           </div>
 
-          <div
-            className="pricing-layout"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 310px",
-              gap: 32,
-              alignItems: "start",
-            }}
-          >
+          <div className="pricing-outer">
+            {/* LEFT SIDE */}
             <div>
-              <div style={{ marginBottom: 44 }}>
-                <BillingToggle annual={annual} onToggle={() => setAnnual((a) => !a)} />
+              <BillingToggle annual={annual} onToggle={() => setAnnual((a) => !a)} />
 
-                <div
-                  className="pricing-cards"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: 12,
-                    alignItems: "start",
-                  }}
-                >
-                  {PLANS.map((plan) => (
-                    <PlanCard
+              <div style={{ display: "flex", gap: 7, marginBottom: 16, flexWrap: "wrap" }}>
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    className={`tab-pill ${activeTab === tab.id ? "active" : ""}`}
+                    onClick={() => handleTabChange(tab.id)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="plans-inner">
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {currentPlans.map((plan) => (
+                    <PlanListCard
                       key={plan.id}
                       plan={plan}
                       annual={annual}
-                      selected={selectedPlan === plan.id}
-                      onClick={() => setSelectedPlan(plan.id)}
+                      selected={selectedPlan?.id === plan.id}
+                      onClick={() => setSelectedPlanId(plan.id)}
                     />
                   ))}
                 </div>
+
+                <DetailPanel plan={selectedPlan} annual={annual} />
               </div>
 
               <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
@@ -1082,28 +924,19 @@ export default function Pricing() {
               <QuickStats />
             </div>
 
-            <div
-              className="pricing-sidebar"
-              style={{
-                alignSelf: "stretch",
-                minHeight: "100%",
-              }}
-            >
-              <div
-                className="pricing-sidebar-sticky"
-                style={{
-                  position: "sticky",
-                  top: 110,
-                }}
-              >
+            {/* RIGHT SIDEBAR */}
+          <div className="right-sidebar-column">
+            <div className="sidebar-sticky">
+              <div className="sidebar-shell">
                 <Sidebar
                   annual={annual}
                   onToggle={() => setAnnual((a) => !a)}
                   selectedPlan={selectedPlan}
-                  onSelectPlan={setSelectedPlan}
+                  onSelectPlan={setSelectedPlanId}
                 />
               </div>
             </div>
+          </div>
           </div>
         </div>
 
