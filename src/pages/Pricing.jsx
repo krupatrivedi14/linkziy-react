@@ -2,506 +2,360 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-/* ─── DATA ─────────────────────────────────────────── */
+import { useState } from "react";
+
+/* ─── DATA ──────────────────────────────────────────────── */
+
+
 const PLANS = [
   {
     id: "starter",
     tier: "Starter",
-    name: ["Solo", "Grower"],
+    name: "Solo Grower",
     desc: "For individuals building their personal brand from the ground up.",
     monthly: 19,
     annual: 13,
-    chipClass: "chip-s",
-    btnClass: "btn-ghost",
-    btnLabel: "Get Started",
+    popular: false,
     features: [
-      { label: "1 LinkedIn profile connected", dim: false },
-      { label: "15 AI posts generated/month", dim: false },
-      { label: "Basic analytics dashboard", dim: false },
-      { label: "Post scheduler (30 slots)", dim: false },
-      { label: "Competitor tracking", dim: true },
-      { label: "Team workspace", dim: true },
+      "1 LinkedIn profile connected",
+      "15 AI posts generated/month",
+      "Basic analytics dashboard",
+      "Post scheduler (30 slots)",
     ],
+    unavailable: ["Competitor tracking", "Team workspace"],
+    btnLabel: "Get Started",
   },
   {
     id: "pro",
     tier: "Pro",
-    name: ["Power", "Creator"],
+    name: "Power Creator",
     desc: "For professionals who want consistent, compounding LinkedIn growth.",
     monthly: 49,
     annual: 34,
-    chipClass: "chip-p",
-    btnClass: "btn-lime",
-    btnLabel: "Start Free Trial",
     popular: true,
     features: [
-      { label: "3 LinkedIn profiles", dim: false, ck: "ck-lime", stroke: "#111" },
-      { label: "Unlimited AI posts", dim: false, ck: "ck-lime", stroke: "#111" },
-      { label: "Advanced analytics & insights", dim: false, ck: "ck-lime", stroke: "#111" },
-      { label: "Competitor tracking (5 rivals)", dim: false, ck: "ck-lime", stroke: "#111" },
-      { label: "AI reply assistant", dim: false, ck: "ck-lime", stroke: "#111" },
-      { label: "Team workspace", dim: true, ck: "ck-lime-o", stroke: "#c8f000" },
+      "3 LinkedIn profiles",
+      "Unlimited AI posts",
+      "Advanced analytics & insights",
+      "Competitor tracking (5 rivals)",
+      "AI reply assistant",
     ],
+    unavailable: ["Team workspace"],
+    btnLabel: "Start Free Trial",
   },
   {
     id: "agency",
     tier: "Agency",
-    name: ["Scale", "Engine"],
+    name: "Scale Engine",
     desc: "Built for agencies managing multiple client accounts at full scale.",
     monthly: 149,
     annual: 104,
-    chipClass: "chip-a",
-    btnClass: "btn-ghost",
-    btnLabel: "Get Started",
+    popular: false,
     features: [
-      { label: "Unlimited LinkedIn profiles", dim: false },
-      { label: "Unlimited AI content", dim: false },
-      { label: "White-label client reports", dim: false },
-      { label: "Unlimited competitor tracking", dim: false },
-      { label: "Team workspace (20 seats)", dim: false },
-      { label: "Priority support & onboarding", dim: false },
+      "Unlimited LinkedIn profiles",
+      "Unlimited AI content",
+      "White-label client reports",
+      "Unlimited competitor tracking",
+      "Team workspace (20 seats)",
+      "Priority support & onboarding",
     ],
+    unavailable: [],
+    btnLabel: "Contact Sales",
   },
 ];
 
-const TRUST_STATS = [
-  { num: "12,400+", lbl: "Active Users" },
-  { num: "3.2M", lbl: "Posts Generated" },
-  { num: "4.9★", lbl: "Average Rating" },
-  { num: "14-Day", lbl: "Free Trial" },
-  { num: "No Card", lbl: "Required to Start" },
+const REVIEWS = [
+  { initials: "A", color: "#7c6fcd", name: "Arpit T.", date: "Dec 19, 2025", text: "Linkziy completely transformed how I show up on LinkedIn. My post engagement tripled in the first month — the AI really does nail my voice." },
+  { initials: "D", color: "#4a90d9", name: "Don E.", date: "Dec 10, 2025", text: "The competitor tracking alone is worth the price. I can see exactly what's working in my niche and reverse-engineer winning content." },
+  { initials: "J", color: "#c0392b", name: "Jelle H.", date: "Dec 8, 2025", text: "Setup took under 10 minutes and I had my first week of posts scheduled before lunch. Incredibly smooth onboarding experience." },
+  { initials: "A", color: "#888", name: "Alastair M.", date: "Dec 4, 2025", text: "The annual plan made it an easy decision. Priced fairly for what you get, and the analytics dashboard gives me data I actually use every week." },
+  { initials: "M", color: "#27ae60", name: "Michael S.", date: "Dec 1, 2025", text: "Switched from a competitor and haven't looked back. The AI reply assistant saves me at least 2 hours a week on comment engagement alone." },
+];
+
+const PROMISES = [
+  {
+    title: "14-day free trial",
+    body: "Try every feature of Linkziy completely free for 14 days. No credit card required. If you don't love it, you simply walk away — no charges, no questions.",
+  },
+  {
+    title: "Cancel anytime",
+    body: "There are no long-term contracts or lock-ins. Cancel your subscription at any time directly from your dashboard and you'll never be charged again.",
+  },
+  {
+    title: "Safe & secure payments",
+    body: "All transactions are protected by SSL encryption. We accept all major credit cards and never store your payment details on our servers.",
+  },
 ];
 
 const FAQS = [
-  {
-    q: "Can I switch plans anytime?",
-    a: "Yes — upgrade or downgrade at any time. Changes take effect at your next billing cycle with automatic proration.",
-  },
-  {
-    q: 'What counts as a "LinkedIn profile"?',
-    a: "Each connected LinkedIn account is one profile. You connect via OAuth — Linkziy never stores your credentials.",
-  },
-  {
-    q: "Is the AI content detectable?",
-    a: "Our AI is trained on your personal tone samples. The output is highly natural and passes major AI-detection tools.",
-  },
-  {
-    q: "Do you offer refunds?",
-    a: "Full refund within 7 days of your first paid charge if you're not satisfied — no questions asked.",
-  },
-  {
-    q: "What payment methods are accepted?",
-    a: "All major credit cards (Visa, Mastercard, Amex). Annual Agency plans also support invoice-based payment.",
-  },
-  {
-    q: "Discounts for students or non-profits?",
-    a: "Yes — 50% off for verified students and registered non-profits. Contact our support team to apply.",
-  },
+  { q: "Can I switch plans anytime?", a: "Yes — upgrade or downgrade at any time. Changes take effect at your next billing cycle with automatic proration." },
+  { q: 'What counts as a "LinkedIn profile"?', a: "Each connected LinkedIn account is one profile. You connect via OAuth — Linkziy never stores your credentials." },
+  { q: "Is the AI content detectable?", a: "Our AI is trained on your personal tone samples. The output is highly natural and passes major AI-detection tools." },
+  { q: "Do you offer refunds?", a: "Full refund within 7 days of your first paid charge if you're not satisfied — no questions asked." },
+  { q: "What payment methods are accepted?", a: "All major credit cards (Visa, Mastercard, Amex). Annual Agency plans also support invoice-based payment." },
+  { q: "Discounts for students or non-profits?", a: "Yes — 50% off for verified students and registered non-profits. Contact our support team to apply." },
 ];
 
-/* ─── COMPONENTS ───────────────────────────────────── */
+const TRUST_BADGES = [
+  { icon: "✦", label: "14-day free trial" },
+  { icon: "⚡", label: "Instant account access" },
+  { icon: "🔒", label: "Safe & secure checkout" },
+];
 
-function CheckIcon({ stroke = "#555" }) {
+const FOOTER_COLS = [
+  { heading: "Product", links: ["Features", "Pricing", "Changelog", "Roadmap"] },
+  { heading: "Resources", links: ["Blog", "Guides", "Case Studies", "FAQs"] },
+  { heading: "Company", links: ["About", "Contact", "Careers", "Press"] },
+  { heading: "Legal", links: ["Privacy Policy", "Terms of Service", "Security"] },
+];
+
+/* ─── SHARED LOGO ───────────────────────────────────────── */
+function NavLogo({ dark = false }) {
   return (
-    <svg viewBox="0 0 9 7" fill="none" style={{ width: 9, height: 9 }}>
-      <path
-        d="M1 3.5l2 2L8 1"
-        stroke={stroke}
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <a href="/" aria-label="Linkziy home" style={{ display: "flex", alignItems: "center", gap: 9, textDecoration: "none" }}>
+      <span style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        width: 30, height: 30, background: "#c8f000", borderRadius: 8, flexShrink: 0,
+        boxShadow: "0 2px 8px rgba(200,240,0,0.35)",
+      }}>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 7 L5.5 10.5 L12 3" stroke="#0a0a0a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+      <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: "0.5px", color: dark ? "#fff" : "#0a0a0a", lineHeight: 1 }}>
+        LINK<span style={{ color: "#c8f000" }}>ZIY</span>
+      </span>
+    </a>
   );
 }
 
-function BillingToggle({ annual, onToggle }) {
+/* ─── NAVBAR ────────────────────────────────────────────── */
+function Navbar() {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: ".9rem",
-        marginBottom: "2.8rem",
-        flexWrap: "wrap",
-      }}
-    >
-      <span
-        style={{
-          fontSize: ".82rem",
-          fontWeight: 700,
-          letterSpacing: ".05em",
-          textTransform: "uppercase",
-          color: !annual ? "#111" : "#888",
-        }}
-      >
-        Monthly
-      </span>
-
-      <label
-        style={{
-          position: "relative",
-          width: 48,
-          height: 26,
-          cursor: "pointer",
-          display: "inline-block",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={annual}
-          onChange={onToggle}
-          style={{ opacity: 0, width: 0, height: 0 }}
-        />
-        <span
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: annual ? "#c8f000" : "#d0ccc4",
-            borderRadius: 100,
-            transition: "background .3s",
-          }}
-        >
-          <span
-            style={{
-              position: "absolute",
-              width: 20,
-              height: 20,
-              left: 3,
-              top: 3,
-              background: "#111",
-              borderRadius: "50%",
-              transform: annual ? "translateX(22px)" : "none",
-              transition: "transform .3s",
-            }}
-          />
-        </span>
-      </label>
-
-      <span
-        style={{
-          fontSize: ".82rem",
-          fontWeight: 700,
-          letterSpacing: ".05em",
-          textTransform: "uppercase",
-          color: annual ? "#111" : "#888",
-        }}
-      >
-        Annual
-      </span>
-
-      <span
-        style={{
-          fontSize: ".68rem",
-          fontWeight: 800,
-          letterSpacing: ".07em",
-          textTransform: "uppercase",
-          background: "#111",
-          color: "#c8f000",
-          padding: ".22rem .65rem",
-          borderRadius: 4,
-        }}
-      >
-        Save 30%
-      </span>
+    <div style={{ padding: "14px 32px", position: "sticky", top: 0, zIndex: 1000 }}>
+      <nav style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: "rgba(244,242,232,0.88)",
+        backdropFilter: "blur(22px) saturate(1.6)",
+        WebkitBackdropFilter: "blur(22px) saturate(1.6)",
+        border: "1px solid rgba(255,255,255,0.65)",
+        borderRadius: 14, padding: "10px 18px 10px 14px",
+        maxWidth: 1200, margin: "0 auto",
+        boxShadow: "0 4px 28px rgba(0,0,0,0.07)",
+      }}>
+        <NavLogo />
+        <ul style={{ display: "flex", gap: 32, listStyle: "none", margin: 0, padding: 0 }}>
+          {NAV_LINKS.map(link => (
+            <li key={link}>
+              <a href="#" style={{
+                fontSize: 11.5, fontWeight: 700, letterSpacing: "1.6px",
+                textTransform: "uppercase", color: "#0a0a0a",
+                textDecoration: "none", opacity: link === "Pricing" ? 1 : 0.5,
+                borderBottom: link === "Pricing" ? "2px solid #c8f000" : "2px solid transparent",
+                paddingBottom: 2,
+              }}>{link}</a>
+            </li>
+          ))}
+        </ul>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <a href="#" style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#0a0a0a", textDecoration: "none", opacity: 0.65 }}>
+            Log In
+          </a>
+          <a href="#" style={{
+            fontSize: 11.5, fontWeight: 800, letterSpacing: "1.2px", textTransform: "uppercase",
+            background: "#0a0a0a", color: "#fff", padding: "10px 19px", borderRadius: 8, textDecoration: "none",
+          }}>Start Free</a>
+        </div>
+      </nav>
     </div>
   );
 }
 
-function PlanCard({ plan, annual }) {
-  const price = annual ? plan.annual : plan.monthly;
-  const isPopular = plan.popular;
-  const isAgency = plan.id === "agency";
-
-  const getChkStyle = (feat) => {
-    if (isPopular) {
-      const ck = feat.ck || "ck-lime";
-      if (ck === "ck-lime") return { background: "#c8f000", border: "none" };
-      if (ck === "ck-lime-o") {
-        return { background: "transparent", border: "1.5px solid #c8f000" };
-      }
-    }
-    if (isAgency) return { background: "#111", border: "1.5px solid #333" };
-    return { background: "#f0ede6", border: "1.5px solid #d0ccc4" };
-  };
-
-  const getStroke = (feat) => {
-    if (isPopular) return feat.stroke || "#111";
-    if (isAgency) return "#c8f000";
-    return "#555";
-  };
-
+/* ─── BILLING TOGGLE ────────────────────────────────────── */
+function BillingToggle({ annual, onToggle }) {
   return (
-    <div
-      style={{
-        borderRadius: 18,
-        padding: "2rem",
-        border: `2px solid ${isPopular ? "#c8f000" : "#d0ccc4"}`,
-        background: isPopular ? "#181818" : "#fff",
-        position: "relative",
-        transform: isPopular ? "translateY(-12px)" : "none",
-        transition: "transform .28s, box-shadow .28s",
-        animation: "up .5s ease both",
-        color: isPopular ? "#fff" : "#111",
-        boxShadow: isPopular
-          ? "0 18px 40px rgba(0,0,0,0.18)"
-          : "0 8px 24px rgba(0,0,0,0.04)",
-      }}
-    >
-      {isPopular && (
-        <div
-          style={{
-            position: "absolute",
-            top: -14,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "#c8f000",
-            color: "#111",
-            fontSize: ".65rem",
-            fontWeight: 800,
-            letterSpacing: ".1em",
-            textTransform: "uppercase",
-            padding: ".26rem .95rem",
-            borderRadius: 100,
-            whiteSpace: "nowrap",
-          }}
-        >
-          ★ Most Popular
-        </div>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+      <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: !annual ? "#0a0a0a" : "#999" }}>Monthly</span>
+      <label style={{ position: "relative", width: 46, height: 25, cursor: "pointer", display: "inline-block", flexShrink: 0 }}>
+        <input type="checkbox" checked={annual} onChange={onToggle} style={{ opacity: 0, width: 0, height: 0 }} />
+        <span style={{ position: "absolute", inset: 0, background: annual ? "#c8f000" : "#ccc", borderRadius: 100, transition: "background .3s" }}>
+          <span style={{ position: "absolute", width: 19, height: 19, left: 3, top: 3, background: "#0a0a0a", borderRadius: "50%", transform: annual ? "translateX(21px)" : "none", transition: "transform .3s" }} />
+        </span>
+      </label>
+      <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: annual ? "#0a0a0a" : "#999" }}>Annual</span>
+      <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.8px", textTransform: "uppercase", background: "#0a0a0a", color: "#c8f000", padding: "3px 8px", borderRadius: 4 }}>Save 30%</span>
+    </div>
+  );
+}
+
+/* ─── PLAN CARD ─────────────────────────────────────────── */
+function PlanCard({ plan, annual, selected, onClick }) {
+  const price = annual ? plan.annual : plan.monthly;
+  return (
+    <div onClick={onClick} style={{
+      background: plan.popular ? "#0a0a0a" : "#fff",
+      border: `2px solid ${selected ? "#c8f000" : plan.popular ? "#c8f000" : "#e0ddd5"}`,
+      borderRadius: 14, padding: "24px 20px",
+      position: "relative", cursor: "pointer",
+      boxShadow: selected ? "0 0 0 3px rgba(200,240,0,0.25)" : "none",
+      transition: "border-color .2s, box-shadow .2s",
+    }}>
+      {plan.popular && (
+        <div style={{
+          position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)",
+          background: "#c8f000", color: "#0a0a0a", fontSize: 9.5, fontWeight: 800,
+          letterSpacing: "1.2px", textTransform: "uppercase", padding: "3px 12px", borderRadius: 100, whiteSpace: "nowrap",
+        }}>★ Most Popular</div>
       )}
+      <span style={{
+        display: "inline-block", fontSize: 9.5, fontWeight: 800, letterSpacing: "1.5px",
+        textTransform: "uppercase", padding: "3px 9px", borderRadius: 4, marginBottom: 10,
+        ...(plan.popular ? { background: "#c8f000", color: "#0a0a0a" }
+          : plan.id === "agency" ? { background: "#1a1a1a", color: "#c8f000", border: "1px solid #333" }
+          : { background: "#f4f2e8", color: "#666", border: "1px solid #e0ddd5" }),
+      }}>{plan.tier}</span>
 
-      <span
-        style={{
-          display: "inline-block",
-          fontSize: ".65rem",
-          fontWeight: 800,
-          letterSpacing: ".12em",
-          textTransform: "uppercase",
-          padding: ".22rem .7rem",
-          borderRadius: 4,
-          marginBottom: "1rem",
-          ...(plan.chipClass === "chip-s"
-            ? {
-                background: "#f0ede6",
-                color: "#555",
-                border: "1.5px solid #d0ccc4",
-              }
-            : plan.chipClass === "chip-p"
-            ? { background: "#c8f000", color: "#111" }
-            : { background: "#222", color: "#c8f000" }),
-        }}
-      >
-        {plan.tier}
-      </span>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 0.5, color: plan.popular ? "#fff" : "#0a0a0a", marginBottom: 5 }}>{plan.name}</div>
+      <p style={{ fontSize: 12, color: plan.popular ? "#777" : "#666", lineHeight: 1.5, marginBottom: 16, minHeight: 36 }}>{plan.desc}</p>
 
-      <div
-        style={{
-          fontFamily: "'Barlow Condensed', sans-serif",
-          fontSize: "2.1rem",
-          fontWeight: 900,
-          textTransform: "uppercase",
-          letterSpacing: "-.01em",
-          lineHeight: 1,
-          color: isPopular ? "#fff" : "#111",
-          marginBottom: ".5rem",
-        }}
-      >
-        {plan.name[0]}
-        <br />
-        {plan.name[1]}
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 3, paddingBottom: 14, marginBottom: 14, borderBottom: `1px solid ${plan.popular ? "#1e1e1e" : "#ede9e0"}` }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: plan.popular ? "#666" : "#aaa", marginBottom: 5 }}>$</span>
+        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 46, lineHeight: 1, color: plan.popular ? "#c8f000" : "#0a0a0a" }}>{price}</span>
+        <span style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>/mo</span>
       </div>
 
-      <p
-        style={{
-          fontSize: ".84rem",
-          color: isPopular ? "#999" : "#555",
-          lineHeight: 1.6,
-          minHeight: "2.4rem",
-          marginBottom: "1.4rem",
-        }}
-      >
-        {plan.desc}
-      </p>
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          gap: ".2rem",
-          paddingBottom: "1.4rem",
-          marginBottom: "1.5rem",
-          borderBottom: `1.5px solid ${isPopular ? "#2e2e2e" : "#d0ccc4"}`,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'Barlow Condensed',sans-serif",
-            fontSize: "1.3rem",
-            fontWeight: 700,
-            color: isPopular ? "#666" : "#888",
-            marginBottom: ".45rem",
-          }}
-        >
-          $
-        </span>
-        <span
-          style={{
-            fontFamily: "'Barlow Condensed',sans-serif",
-            fontSize: "4rem",
-            fontWeight: 900,
-            lineHeight: 1,
-            letterSpacing: "-.03em",
-            color: isPopular ? "#c8f000" : "#111",
-            transition: "all .3s",
-          }}
-        >
-          {price}
-        </span>
-        <span
-          style={{
-            fontSize: ".82rem",
-            color: "#888",
-            fontWeight: 500,
-            marginBottom: ".5rem",
-          }}
-        >
-          /mo
-        </span>
-      </div>
-
-      <ul
-        style={{
-          listStyle: "none",
-          display: "flex",
-          flexDirection: "column",
-          gap: ".7rem",
-          marginBottom: "1.8rem",
-          padding: 0,
-        }}
-      >
-        {plan.features.map((feat, i) => (
-          <li
-            key={i}
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: ".65rem",
-              fontSize: ".855rem",
-              lineHeight: 1.4,
-              color: isPopular ? "#ccc" : "#1a1a1a",
-              opacity: feat.dim ? 0.35 : 1,
-            }}
-          >
-            <span
-              style={{
-                flexShrink: 0,
-                width: 18,
-                height: 18,
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: 1,
-                ...getChkStyle(feat),
-              }}
-            >
-              <CheckIcon stroke={getStroke(feat)} />
+      <ul style={{ listStyle: "none", padding: 0, margin: "0 0 18px", display: "flex", flexDirection: "column", gap: 8 }}>
+        {plan.features.map(f => (
+          <li key={f} style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 12, color: plan.popular ? "#ccc" : "#333", lineHeight: 1.4 }}>
+            <span style={{
+              width: 15, height: 15, borderRadius: "50%", flexShrink: 0, marginTop: 1,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: plan.popular ? "#c8f000" : plan.id === "agency" ? "#1a1a1a" : "#f0ede6",
+              border: plan.id === "agency" ? "1px solid #333" : "none",
+            }}>
+              <svg width="7" height="6" viewBox="0 0 9 7" fill="none">
+                <path d="M1 3.5l2 2L8 1" stroke={plan.popular ? "#0a0a0a" : plan.id === "agency" ? "#c8f000" : "#555"} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </span>
-            {feat.label}
+            {f}
+          </li>
+        ))}
+        {plan.unavailable.map(f => (
+          <li key={f} style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 12, color: "#bbb", lineHeight: 1.4, opacity: 0.5 }}>
+            <span style={{ width: 15, height: 15, borderRadius: "50%", flexShrink: 0, marginTop: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${plan.popular ? "#333" : "#ddd"}` }}>
+              <svg width="7" height="6" viewBox="0 0 9 7" fill="none">
+                <path d="M1 3.5l2 2L8 1" stroke="#ccc" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            {f}
           </li>
         ))}
       </ul>
 
-      <button
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: ".5rem",
-          width: "100%",
-          padding: ".88rem 1.5rem",
-          borderRadius: 10,
-          fontSize: ".82rem",
-          fontWeight: 800,
-          letterSpacing: ".07em",
-          textTransform: "uppercase",
-          cursor: "pointer",
-          ...(plan.btnClass === "btn-lime"
-            ? {
-                background: "#c8f000",
-                color: "#111",
-                border: "none",
-                boxShadow: "0 6px 18px rgba(200,240,0,.28)",
-              }
-            : {
-                background: "transparent",
-                color: isPopular ? "#fff" : "#111",
-                border: `2px solid ${isPopular ? "#444" : "#d0ccc4"}`,
-              }),
-        }}
-      >
-        {plan.btnLabel}
-        <span
-          style={{
-            width: 18,
-            height: 18,
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: ".65rem",
-            flexShrink: 0,
-            background: "#111",
-            color: plan.btnClass === "btn-lime" ? "#c8f000" : "#fff",
-          }}
-        >
-          →
-        </span>
-      </button>
+      <a href="#" style={{
+        display: "block", textAlign: "center", padding: "11px 0", borderRadius: 8,
+        fontSize: 11, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", textDecoration: "none",
+        ...(plan.popular ? { background: "#c8f000", color: "#0a0a0a" } : { background: "transparent", color: "#0a0a0a", border: "1.5px solid #d0ccc4" }),
+      }}>{plan.btnLabel} →</a>
     </div>
   );
 }
 
-function TrustBar() {
+/* ─── STICKY SIDEBAR ────────────────────────────────────── */
+function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
+  const plan = PLANS.find(p => p.id === selectedPlan) || PLANS[1];
+  const price = annual ? plan.annual : plan.monthly;
+
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 2rem" }}>
-      <div
-        style={{
-          borderTop: "2px dashed #d0ccc4",
-          borderBottom: "2px dashed #d0ccc4",
-          padding: "2rem 0",
-          marginBottom: "4.5rem",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-around",
-          gap: "1.5rem",
-        }}
-      >
-        {TRUST_STATS.map(({ num, lbl }) => (
-          <div key={lbl} style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontFamily: "'Barlow Condensed',sans-serif",
-                fontSize: "2.1rem",
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: "-.02em",
-                lineHeight: 1,
-              }}
-            >
-              {num}
-            </div>
-            <div
-              style={{
-                fontSize: ".68rem",
-                fontWeight: 700,
-                letterSpacing: ".1em",
-                textTransform: "uppercase",
-                color: "#888",
-                marginTop: ".2rem",
-              }}
-            >
-              {lbl}
+    <div style={{ position: "sticky", top: 90, display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* CTA Card */}
+      <div style={{ background: "#fff", border: "1.5px solid #e0ddd5", borderRadius: 14, padding: "20px 18px" }}>
+        {/* Plan selector tabs */}
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#aaa", marginBottom: 7 }}>Select Plan</div>
+          <div style={{ display: "flex", gap: 5 }}>
+            {PLANS.map(p => (
+              <button key={p.id} onClick={() => onSelectPlan(p.id)} style={{
+                flex: 1, padding: "7px 2px", borderRadius: 7,
+                border: `1.5px solid ${selectedPlan === p.id ? "#c8f000" : "#e8e5de"}`,
+                background: selectedPlan === p.id ? "#c8f000" : "#f9f8f4",
+                color: "#0a0a0a", fontSize: 10, fontWeight: 800,
+                letterSpacing: "0.5px", textTransform: "uppercase", cursor: "pointer",
+                transition: "all .15s",
+              }}>{p.tier}</button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ borderTop: "1px solid #f0ede6", paddingTop: 14, marginBottom: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#0a0a0a" }}>{plan.name}</span>
+            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: "#0a0a0a", lineHeight: 1 }}>
+              ${price}<span style={{ fontSize: 12, fontWeight: 500, color: "#888", fontFamily: "'Barlow', sans-serif" }}>/mo</span>
+            </span>
+          </div>
+          <div style={{ fontSize: 11, color: "#aaa" }}>{annual ? "Billed annually" : "Billed monthly"} · Cancel anytime</div>
+        </div>
+
+        {/* Mini toggle */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "9px 11px", background: "#f9f8f4", borderRadius: 8 }}>
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: !annual ? "#0a0a0a" : "#aaa", textTransform: "uppercase", letterSpacing: "0.5px" }}>Monthly</span>
+          <label style={{ position: "relative", width: 36, height: 20, cursor: "pointer", display: "inline-block", flexShrink: 0 }}>
+            <input type="checkbox" checked={annual} onChange={onToggle} style={{ opacity: 0, width: 0, height: 0 }} />
+            <span style={{ position: "absolute", inset: 0, background: annual ? "#c8f000" : "#ccc", borderRadius: 100, transition: "background .3s" }}>
+              <span style={{ position: "absolute", width: 14, height: 14, left: 3, top: 3, background: "#0a0a0a", borderRadius: "50%", transform: annual ? "translateX(16px)" : "none", transition: "transform .3s" }} />
+            </span>
+          </label>
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: annual ? "#0a0a0a" : "#aaa", textTransform: "uppercase", letterSpacing: "0.5px" }}>Annual</span>
+          {annual && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, background: "#0a0a0a", color: "#c8f000", padding: "2px 6px", borderRadius: 3, letterSpacing: "0.5px" }}>−30%</span>}
+        </div>
+
+        <a href="#" style={{
+          display: "block", textAlign: "center", background: "#c8f000", color: "#0a0a0a",
+          fontWeight: 800, fontSize: 11.5, letterSpacing: "1px", textTransform: "uppercase",
+          padding: "12px 0", borderRadius: 8, textDecoration: "none", marginBottom: 8,
+        }}>▶ Start Free Trial</a>
+        <a href="#" style={{
+          display: "block", textAlign: "center", background: "#0a0a0a", color: "#fff",
+          fontWeight: 800, fontSize: 11.5, letterSpacing: "1px", textTransform: "uppercase",
+          padding: "12px 0", borderRadius: 8, textDecoration: "none",
+        }}>▶ Get Started Now</a>
+
+        <p style={{ fontSize: 10.5, color: "#bbb", textAlign: "center", marginTop: 10, lineHeight: 1.5 }}>
+          14-day free trial · No credit card required
+        </p>
+      </div>
+
+      {/* Trust badges */}
+      <div style={{ background: "#fff", border: "1.5px solid #e0ddd5", borderRadius: 14, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
+        {TRUST_BADGES.map(({ icon, label }) => (
+          <div key={label} style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <span style={{ width: 36, height: 36, borderRadius: "50%", background: "#f4f2e8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>{icon}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#333" }}>{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── REVIEWS ───────────────────────────────────────────── */
+function Reviews() {
+  return (
+    <div style={{ marginBottom: 48 }}>
+      <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000", marginBottom: 4 }}>What our users say</h2>
+      <p style={{ fontSize: 13, color: "#777", marginBottom: 22 }}>Join 12,400+ professionals growing on LinkedIn with Linkziy.</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {REVIEWS.map(({ initials, color, name, date, text }) => (
+          <div key={name} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+            <span style={{ width: 40, height: 40, borderRadius: "50%", background: color, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 15, color: "#fff" }}>{initials}</span>
+            <div>
+              <div style={{ fontSize: 13.5, color: "#333", lineHeight: 1.65, marginBottom: 5 }}>
+                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginRight: 3 }}>"</span>
+                {text}
+                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginLeft: 3 }}>"</span>
+              </div>
+              <div style={{ fontSize: 11.5, color: "#aaa" }}>— {name}, {date}</div>
             </div>
           </div>
         ))}
@@ -510,273 +364,197 @@ function TrustBar() {
   );
 }
 
+/* ─── PROMISE CARDS ─────────────────────────────────────── */
+function Promises() {
+  return (
+    <div style={{ marginBottom: 48 }}>
+      <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000", marginBottom: 18 }}>Our promise to you</h2>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {PROMISES.map(({ title, body }) => (
+          <div key={title} style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 11, padding: "20px 22px" }}>
+            <div style={{ fontWeight: 800, fontSize: 15, color: "#0a0a0a", marginBottom: 7 }}>{title}</div>
+            <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.7 }}>{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── FAQ ────────────────────────────────────────────────── */
 function FaqItem({ q, a }) {
   const [open, setOpen] = useState(false);
-
   return (
-    <div
-      onClick={() => setOpen((o) => !o)}
-      style={{
-        background: open ? "#f7fae5" : "#fff",
-        border: `2px solid ${open ? "#c8f000" : "#d0ccc4"}`,
-        borderRadius: 12,
-        padding: "1.25rem 1.4rem",
-        cursor: "pointer",
-        transition: "border-color .2s, background .2s",
-      }}
-    >
-      <div
-        style={{
-          fontSize: ".875rem",
-          fontWeight: 700,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: ".8rem",
-          color: "#111",
-        }}
-      >
-        {q}
-        <span
-          style={{
-            width: 23,
-            height: 23,
-            border: `2px solid ${open ? "#c8f000" : "#d0ccc4"}`,
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: ".85rem",
-            flexShrink: 0,
-            color: open ? "#111" : "#888",
-            background: open ? "#c8f000" : "transparent",
-            transform: open ? "rotate(45deg)" : "none",
-            transition:
-              "transform .25s, background .2s, border-color .2s, color .2s",
-          }}
-        >
-          +
-        </span>
+    <div onClick={() => setOpen(o => !o)} style={{
+      background: open ? "#f7fae5" : "#0a0a0a",
+      border: `1.5px solid ${open ? "#c8f000" : "#1a1a1a"}`,
+      borderRadius: 9, padding: "14px 16px", cursor: "pointer",
+      transition: "background .2s, border-color .2s",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+        <span style={{ fontSize: 13.5, fontWeight: 700, color: open ? "#0a0a0a" : "#fff" }}>{q}</span>
+        <span style={{
+          width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: open ? "#c8f000" : "transparent",
+          border: `1.5px solid ${open ? "#c8f000" : "#444"}`,
+          color: open ? "#0a0a0a" : "#777", fontSize: 13,
+          transform: open ? "rotate(45deg)" : "none", transition: "all .22s",
+        }}>+</span>
       </div>
-
-      <div
-        style={{
-          fontSize: ".84rem",
-          color: "#555",
-          lineHeight: 1.65,
-          maxHeight: open ? 200 : 0,
-          overflow: "hidden",
-          transition: "max-height .35s ease, margin-top .2s",
-          marginTop: open ? ".75rem" : 0,
-        }}
-      >
-        {a}
-      </div>
+      {open && <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.65, marginTop: 10 }}>{a}</p>}
     </div>
   );
 }
 
 function FaqSection() {
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 2rem 5.5rem" }}>
-      <span
-        style={{
-          display: "inline-block",
-          fontSize: ".68rem",
-          fontWeight: 800,
-          letterSpacing: ".12em",
-          textTransform: "uppercase",
-          background: "#c8f000",
-          color: "#111",
-          padding: ".22rem .7rem",
-          borderRadius: 4,
-          marginBottom: ".9rem",
-        }}
-      >
-        FAQ
-      </span>
-
-      <div
-        style={{
-          fontFamily: "'Barlow Condensed',sans-serif",
-          fontSize: "clamp(2rem,4vw,3rem)",
-          fontWeight: 900,
-          textTransform: "uppercase",
-          letterSpacing: "-.02em",
-          lineHeight: 1.05,
-          marginBottom: ".5rem",
-        }}
-      >
-        Got Questions?
-        <br />
-        We've Got Answers.
+    <div style={{ marginBottom: 48 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 16 }}>
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000" }}>FAQs</h2>
+        <a href="#" style={{ fontSize: 12.5, color: "#c8f000", textDecoration: "none", fontWeight: 700 }}>See all FAQs →</a>
       </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+        {FAQS.map(({ q, a }) => <FaqItem key={q} q={q} a={a} />)}
+      </div>
+    </div>
+  );
+}
 
-      <p style={{ fontSize: ".9rem", color: "#555", marginBottom: "2.2rem" }}>
-        Everything you need before you start growing on LinkedIn.
-      </p>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: ".8rem",
-        }}
-      >
-        {FAQS.map(({ q, a }) => (
-          <FaqItem key={q} q={q} a={a} />
+/* ─── QUICK STATS TABLE ─────────────────────────────────── */
+function QuickStats() {
+  const rows = [
+    ["Active users", "12,400+"],
+    ["Posts generated", "3.2 million"],
+    ["Average rating", "4.9 / 5.0"],
+    ["Free trial length", "14 days"],
+    ["Credit card required", "No"],
+    ["Cancellation policy", "Cancel anytime"],
+  ];
+  return (
+    <div style={{ marginBottom: 48 }}>
+      <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000", marginBottom: 16 }}>Quick stats</h2>
+      <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 11, overflow: "hidden" }}>
+        {rows.map(([label, value], i) => (
+          <div key={label} style={{
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            padding: "12px 18px",
+            borderBottom: i < rows.length - 1 ? "1px dotted #e8e5de" : "none",
+            background: i % 2 === 0 ? "#fff" : "#faf9f5",
+          }}>
+            <span style={{ fontSize: 13.5, color: "#555" }}>{label}</span>
+            <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0a0a0a" }}>{value}</span>
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-/* ─── PAGE ─────────────────────────────────────────── */
-export default function Pricing() {
+/* ─── FOOTER ────────────────────────────────────────────── */
+function Footer() {
+  return (
+    <footer style={{ background: "#0a0a0a", padding: "52px 0 0" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 32, marginBottom: 44 }}>
+          {FOOTER_COLS.map(({ heading, links }) => (
+            <div key={heading}>
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "#fff", marginBottom: 14 }}>{heading}</div>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                {links.map(l => (
+                  <li key={l}><a href="#" style={{ fontSize: 13.5, color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>{l}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", padding: "20px 0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+          <NavLogo dark />
+          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>© 2025 Linkziy. All rights reserved.</span>
+          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>14-day free trial · No credit card · Cancel anytime</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ─── MAIN PAGE ─────────────────────────────────────────── */
+export default function LinkziyPricing() {
   const [annual, setAnnual] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState("pro");
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800;900&display=swap');
-
-        * { box-sizing: border-box; }
-
-        @keyframes up {
-          from { opacity: 0; transform: translateY(18px); }
-          to { opacity: 1; transform: none; }
-        }
-
-        @media (max-width: 980px) {
-          .pricing-cards {
-            grid-template-columns: 1fr !important;
-          }
-
-          .pricing-faq-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Barlow', sans-serif; background: #f4f2e8; color: #0a0a0a; overflow-x: hidden; }
+        a:hover { opacity: 0.85; }
       `}</style>
 
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#f4f2e8",
-          fontFamily: "'Barlow', sans-serif",
-          color: "#111",
-        }}
-      >
+      <div style={{ minHeight: "100vh", background: "#f4f2e8", fontFamily: "'Barlow', sans-serif" }}>
         <Navbar />
 
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "3.5rem 2rem 0" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              marginBottom: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: ".6rem",
-                background: "#c8f000",
-                color: "#111",
-                fontSize: ".7rem",
-                fontWeight: 800,
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                padding: ".3rem .85rem",
-                borderRadius: 4,
-              }}
-            >
-              💰 Pricing
-            </span>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 32px 0" }}>
 
-            <span
-              style={{
-                fontSize: ".82rem",
-                fontWeight: 600,
-                letterSpacing: ".08em",
-                textTransform: "uppercase",
-                color: "#888",
-              }}
-            >
-              Simple & Transparent
-            </span>
+          {/* Hero */}
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <span style={{ background: "#c8f000", color: "#0a0a0a", fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", padding: "4px 10px", borderRadius: 4 }}>
+                💰 Pricing
+              </span>
+              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", color: "#888" }}>
+                Simple &amp; Transparent
+              </span>
+            </div>
+            <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.8rem, 6vw, 5.5rem)", letterSpacing: 1, color: "#0a0a0a", lineHeight: 0.95, marginBottom: 12 }}>
+              Pick Your <span style={{ color: "#c8f000" }}>Growth</span>{" "}
+              <span style={{ WebkitTextStroke: "2px #0a0a0a", color: "transparent" }}>Plan.</span>
+            </h1>
+            <p style={{ fontSize: 14, color: "#666", lineHeight: 1.65, maxWidth: 480 }}>
+              No hidden fees. No contracts. Just results. Start free for 14 days — no credit card required.
+            </p>
           </div>
 
-          <h1
-            style={{
-              fontFamily: "'Barlow Condensed', sans-serif",
-              fontSize: "clamp(3.8rem, 9vw, 7.5rem)",
-              fontWeight: 900,
-              textTransform: "uppercase",
-              letterSpacing: "-.02em",
-              lineHeight: 0.93,
-              color: "#111",
-              marginBottom: "1.2rem",
-            }}
-          >
-            PICK YOUR
-            <br />
-            <span style={{ color: "#c8f000" }}>GROWTH</span>
-            <br />
-            <span style={{ WebkitTextStroke: "3px #111", color: "transparent" }}>
-              PLAN.
-            </span>
-          </h1>
+          {/* ── TWO-COLUMN LAYOUT ── */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 310px", gap: 32, alignItems: "start" }}>
 
-          <p
-            style={{
-              fontSize: ".98rem",
-              color: "#555",
-              lineHeight: 1.65,
-              maxWidth: 440,
-              marginBottom: "2.2rem",
-            }}
-          >
-            No hidden fees. No contracts. Just results.
-            <br />
-            Start free for 14 days — no credit card required.
-          </p>
+            {/* LEFT COLUMN */}
+            <div>
+              {/* Billing + plan cards */}
+              <div style={{ marginBottom: 44 }}>
+                <BillingToggle annual={annual} onToggle={() => setAnnual(a => !a)} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, alignItems: "start" }}>
+                  {PLANS.map(plan => (
+                    <PlanCard
+                      key={plan.id}
+                      plan={plan}
+                      annual={annual}
+                      selected={selectedPlan === plan.id}
+                      onClick={() => setSelectedPlan(plan.id)}
+                    />
+                  ))}
+                </div>
+              </div>
 
-          <BillingToggle annual={annual} onToggle={() => setAnnual((a) => !a)} />
-        </div>
+              <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
+              <Reviews />
+              <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
+              <Promises />
+              <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
+              <FaqSection />
+              <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
+              <QuickStats />
+            </div>
 
-        <hr
-          style={{
-            border: "none",
-            borderTop: "2px dashed #d0ccc4",
-            maxWidth: 1100,
-            margin: "0 auto 3rem",
-          }}
-        />
-
-        <div
-          className="pricing-cards"
-          style={{
-            maxWidth: 1100,
-            margin: "0 auto",
-            padding: "0 2rem 4rem",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "1.25rem",
-            alignItems: "start",
-          }}
-        >
-          {PLANS.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} annual={annual} />
-          ))}
-        </div>
-
-        <TrustBar />
-
-        <div className="pricing-faq-grid">
-          <FaqSection />
+            {/* RIGHT COLUMN — sticky sidebar */}
+            <Sidebar
+              annual={annual}
+              onToggle={() => setAnnual(a => !a)}
+              selectedPlan={selectedPlan}
+              onSelectPlan={setSelectedPlan}
+            />
+          </div>
         </div>
 
         <Footer />
