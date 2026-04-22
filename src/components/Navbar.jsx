@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -14,17 +16,33 @@ export default function Navbar() {
     <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
       <span className={styles.scanLine} aria-hidden="true" />
 
-      <a href="/" className={styles.logo}>
-        <img src="/logo-removebg-preview.png" alt="Linkziy Logo" className={styles.logoImg} />
+      {/* Logo → always goes to home */}
+      <Link to="/" className={styles.logo}>
+        <img
+          src="/logo-removebg-preview.png"
+          alt="Linkziy Logo"
+          className={styles.logoImg}
+        />
         <span className={styles.logoText}>Linkziy</span>
-      </a>
+      </Link>
 
       <ul className={styles.links}>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#solutions">Solutions</a></li>
-        <li><a href="#built">Built for</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#contact">Contact</a></li>
+        {/* These stay anchor links (landing page sections) */}
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#solutions">Solutions</a></li>
+        <li><a href="/#built">Built for</a></li>
+
+        {/* Pricing → now goes to page */}
+        <li>
+          <Link
+            to="/pricing"
+            className={location.pathname === "/pricing" ? styles.active : ""}
+          >
+            Pricing
+          </Link>
+        </li>
+
+        <li><a href="/#contact">Contact</a></li>
       </ul>
 
       <div className={styles.actions}>
