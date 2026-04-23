@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Cursor from "../components/Cursor";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -470,61 +470,125 @@ function BillingToggle({ annual, onToggle }) {
   );
 }
 
-function PlanListCard({ plan, annual, selected, onClick }) {
+function PlanListCard({ plan, annual, selected, onClick, compact = false }) {
   const price = annual ? plan.annual : plan.monthly;
 
   return (
     <div
       onClick={onClick}
-      className="plan-row"
+      className={`plan-row ${compact ? "compact-plan-row" : ""}`}
       style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 14,
+        display: "grid",
+        gridTemplateColumns: "54px minmax(0, 1fr) auto",
+        alignItems: "start",
+        gap: 16,
         background: selected ? "#f7fae5" : "#fff",
         border: `1.5px solid ${selected ? "#c8f000" : "#e8e5de"}`,
-        borderRadius: 14,
-        padding: "20px 20px",
+        borderRadius: 16,
+        padding: compact ? "16px 18px" : "20px 20px",
         cursor: "pointer",
         transition: "all .18s",
-        boxShadow: selected ? "0 0 0 2px rgba(200,240,0,0.2)" : "none",
+        boxShadow: selected ? "0 0 0 2px rgba(200,240,0,0.18)" : "none",
+        minHeight: compact ? 112 : 132,
       }}
     >
-      <div style={{ width: 46, height: 46, borderRadius: 11, background: selected ? "#d4f04a" : "#eef6c4", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#6a9500", marginTop: 2, transition: "background .18s" }}>
+      <div
+        style={{
+          width: 54,
+          height: 54,
+          borderRadius: 14,
+          background: selected ? "#d4f04a" : "#eef6c4",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 18,
+          color: "#6a9500",
+          transition: "background .18s",
+        }}
+      >
         ✦
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontWeight: 800, fontSize: 15, color: "#0a0a0a", marginBottom: 6, display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-          {plan.name}
+      <div style={{ minWidth: 0, paddingTop: 2 }}>
+        <div
+          style={{
+            fontWeight: 800,
+            fontSize: compact ? 14.5 : 15.5,
+            color: "#0a0a0a",
+            marginBottom: 8,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            flexWrap: "wrap",
+            lineHeight: 1.25,
+          }}
+        >
+          <span>{plan.name}</span>
+
           {plan.badge && (
             <span
               style={{
-                display: "inline-block",
+                display: "inline-flex",
+                alignItems: "center",
                 fontSize: 9,
                 fontWeight: 800,
                 letterSpacing: "1px",
                 textTransform: "uppercase",
-                padding: "2px 8px",
-                borderRadius: 100,
+                padding: "3px 8px",
+                borderRadius: 999,
                 background: "#0a0a0a",
                 color: plan.badgeStyle === "addon" ? "#c8f000" : "#fff",
+                lineHeight: 1,
               }}
             >
               {plan.badge}
             </span>
           )}
         </div>
-        <p style={{ fontSize: 12.5, color: "#666", lineHeight: 1.55, margin: 0 }}>
+
+        <p
+          style={{
+            fontSize: compact ? 12.25 : 12.8,
+            color: "#666",
+            lineHeight: 1.65,
+            margin: 0,
+            maxWidth: "95%",
+          }}
+        >
           {plan.desc}
         </p>
       </div>
 
-      <div style={{ textAlign: "right", flexShrink: 0, paddingTop: 2 }}>
-        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 42, lineHeight: 1, color: "#0a0a0a" }}>
+      <div
+        style={{
+          textAlign: "right",
+          flexShrink: 0,
+          minWidth: 92,
+          paddingTop: 2,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: compact ? 38 : 42,
+            lineHeight: 0.95,
+            color: "#0a0a0a",
+            whiteSpace: "nowrap",
+          }}
+        >
           ${price}
         </div>
-        <div style={{ fontSize: 9.5, color: "#aaa", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginTop: 2 }}>
+        <div
+          style={{
+            fontSize: 9.5,
+            color: "#aaa",
+            fontWeight: 700,
+            letterSpacing: "0.6px",
+            textTransform: "uppercase",
+            marginTop: 4,
+          }}
+        >
           Per Month
         </div>
       </div>
@@ -607,7 +671,6 @@ function ComparisonTable({ activeTab, annual }) {
   const plans = PLANS_BY_TAB[activeTab] || [];
   const { rows, cols } = data;
 
-  // For single-plan tabs (bundle, addons), filter rows to only those that have a value
   const visibleRows = rows.filter((row) => {
     const vals = ["starter", "pro", "agency"];
     return vals.some((k) => row[k] !== null && row[k] !== undefined);
@@ -636,12 +699,10 @@ function ComparisonTable({ activeTab, annual }) {
     return <span style={{ fontSize: 12.5, fontWeight: 700, color: "#0a0a0a" }}>{val}</span>;
   };
 
-  // Popular col index
   const popularIdx = plans.findIndex((p) => p.badge === "POPULAR");
 
   return (
     <div style={{ marginBottom: 36 }}>
-      {/* Header */}
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16, gap: 8 }}>
         <div>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, letterSpacing: 0.5, color: "#0a0a0a", lineHeight: 1, marginBottom: 4 }}>
@@ -651,9 +712,7 @@ function ComparisonTable({ activeTab, annual }) {
         </div>
       </div>
 
-      {/* Table */}
       <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 14, overflow: "hidden" }}>
-        {/* Column headers */}
         <div
           style={{
             display: "grid",
@@ -662,7 +721,6 @@ function ComparisonTable({ activeTab, annual }) {
             padding: "0 0",
           }}
         >
-          {/* Empty label cell */}
           <div style={{ padding: "14px 20px", borderRight: "1px solid #1e1e1e" }}>
             <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "#555" }}>Feature</span>
           </div>
@@ -694,7 +752,6 @@ function ComparisonTable({ activeTab, annual }) {
           ))}
         </div>
 
-        {/* Rows */}
         {visibleRows.map((row, ri) => {
           const isEven = ri % 2 === 0;
           return (
@@ -729,7 +786,6 @@ function ComparisonTable({ activeTab, annual }) {
           );
         })}
 
-        {/* CTA row */}
         <div
           style={{
             display: "grid",
@@ -993,6 +1049,15 @@ export default function Pricing() {
     return currentPlans.find((p) => p.id === selectedPlanId) || currentPlans[0];
   }, [currentPlans, selectedPlanId]);
 
+  const addonsDetailRef = useRef(null);
+  const [addonsDetailHeight, setAddonsDetailHeight] = useState(0);
+
+  useEffect(() => {
+    if (activeTab === "addons" && addonsDetailRef.current) {
+      setAddonsDetailHeight(addonsDetailRef.current.offsetHeight);
+    }
+  }, [activeTab, selectedPlan, annual]);
+
   function handleTabChange(tabId) {
     setActiveTab(tabId);
     const first = PLANS_BY_TAB[tabId]?.[0];
@@ -1053,6 +1118,11 @@ export default function Pricing() {
           align-self: flex-start;
         }
 
+        .plans-detail-col.addons-detail-sticky {
+          position: sticky;
+          top: 110px;
+        }
+
         .tab-pill {
           padding: 8px 15px;
           border-radius: 100px;
@@ -1074,6 +1144,106 @@ export default function Pricing() {
         .plan-row:hover {
           border-color: #c8f000 !important;
           background: #fafde8 !important;
+        }
+
+        .plans-inner.addons-layout {
+          align-items: flex-start;
+        }
+
+        .plans-list-col.addons-scroll {
+          overflow-y: auto;
+          padding-right: 8px;
+          scrollbar-width: thin;
+          scrollbar-color: #c8f000 #ece8de;
+          scroll-behavior: smooth;
+        }
+
+        .plans-list-col.addons-scroll::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .plans-list-col.addons-scroll::-webkit-scrollbar-track {
+          background: #ece8de;
+          border-radius: 999px;
+        }
+
+        .plans-list-col.addons-scroll::-webkit-scrollbar-thumb {
+          background: #c8f000;
+          border-radius: 999px;
+        }
+
+        .bundle-hero-card {
+          background: linear-gradient(135deg, #ffffff 0%, #f7fae5 100%);
+          border: 1.5px solid #dfe7b2;
+          border-radius: 18px;
+          padding: 24px;
+          margin-bottom: 18px;
+        }
+
+        .bundle-top {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 220px;
+          gap: 18px;
+          align-items: start;
+        }
+
+        .bundle-price-box {
+          background: #0a0a0a;
+          color: #fff;
+          border-radius: 16px;
+          padding: 18px 16px;
+          text-align: center;
+        }
+
+        .bundle-mini-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 12px;
+          margin-top: 18px;
+        }
+
+        .bundle-mini-card {
+          background: #fff;
+          border: 1.5px solid #e8e5de;
+          border-radius: 14px;
+          padding: 14px;
+        }
+
+        .bundle-mini-label {
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.9px;
+          text-transform: uppercase;
+          color: #999;
+          margin-bottom: 6px;
+        }
+
+        .bundle-mini-value {
+          font-size: 14px;
+          font-weight: 800;
+          color: #0a0a0a;
+          line-height: 1.4;
+        }
+
+        @media (max-width: 1100px) {
+          .plans-list-col.addons-scroll {
+            max-height: none !important;
+            overflow: visible !important;
+            padding-right: 0 !important;
+          }
+
+          .plans-detail-col.addons-detail-sticky {
+            position: static !important;
+            top: auto !important;
+          }
+
+          .bundle-top {
+            grid-template-columns: 1fr !important;
+          }
+
+          .bundle-mini-grid {
+            grid-template-columns: 1fr !important;
+          }
         }
 
         @media (max-width: 1100px) {
@@ -1115,7 +1285,6 @@ export default function Pricing() {
           </div>
 
           <div className="pricing-outer">
-            {/* LEFT SIDE */}
             <div>
               <BillingToggle annual={annual} onToggle={() => setAnnual((a) => !a)} />
 
@@ -1131,26 +1300,168 @@ export default function Pricing() {
                 ))}
               </div>
 
-              {/* PLAN CARDS + DETAIL PANEL */}
-              <div className="plans-inner">
-                <div className="plans-list-col">
-                  {currentPlans.map((plan) => (
-                    <PlanListCard
-                      key={plan.id}
-                      plan={plan}
-                      annual={annual}
-                      selected={selectedPlan?.id === plan.id}
-                      onClick={() => setSelectedPlanId(plan.id)}
-                    />
-                  ))}
-                </div>
+              {activeTab === "bundle" ? (
+                <div style={{ marginBottom: 32 }}>
+                  <div className="bundle-hero-card">
+                    <div className="bundle-top">
+                      <div>
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 8,
+                            marginBottom: 12,
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 800,
+                              letterSpacing: "1px",
+                              textTransform: "uppercase",
+                              padding: "4px 10px",
+                              borderRadius: 999,
+                              background: "#0a0a0a",
+                              color: "#c8f000",
+                            }}
+                          >
+                            All-in-One Bundle
+                          </span>
+                        </div>
 
-                <div className="plans-detail-col">
+                        <h3
+                          style={{
+                            fontFamily: "'Bebas Neue', sans-serif",
+                            fontSize: 42,
+                            lineHeight: 1,
+                            letterSpacing: 0.5,
+                            marginBottom: 10,
+                            color: "#0a0a0a",
+                          }}
+                        >
+                          {selectedPlan.name}
+                        </h3>
+
+                        <p
+                          style={{
+                            fontSize: 14,
+                            color: "#666",
+                            lineHeight: 1.75,
+                            maxWidth: 620,
+                          }}
+                        >
+                          {selectedPlan.desc}
+                        </p>
+                      </div>
+
+                      <div className="bundle-price-box">
+                        <div
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 800,
+                            letterSpacing: "1px",
+                            textTransform: "uppercase",
+                            color: "#9aa08a",
+                            marginBottom: 8,
+                          }}
+                        >
+                          Starting at
+                        </div>
+
+                        <div
+                          style={{
+                            fontFamily: "'Bebas Neue', sans-serif",
+                            fontSize: 54,
+                            lineHeight: 1,
+                            color: "#c8f000",
+                          }}
+                        >
+                          ${annual ? selectedPlan.annual : selectedPlan.monthly}
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "#bbb",
+                            marginTop: 6,
+                          }}
+                        >
+                          per month
+                        </div>
+
+                        <a
+                          href="#"
+                          style={{
+                            display: "block",
+                            marginTop: 16,
+                            textAlign: "center",
+                            background: "#c8f000",
+                            color: "#0a0a0a",
+                            fontWeight: 800,
+                            fontSize: 11.5,
+                            letterSpacing: "1px",
+                            textTransform: "uppercase",
+                            padding: "12px 0",
+                            borderRadius: 10,
+                            textDecoration: "none",
+                          }}
+                        >
+                          Start Free Trial
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="bundle-mini-grid">
+                      <div className="bundle-mini-card">
+                        <div className="bundle-mini-label">Includes</div>
+                        <div className="bundle-mini-value">Outreach + Scheduling + AI</div>
+                      </div>
+
+                      <div className="bundle-mini-card">
+                        <div className="bundle-mini-label">Lead Credits</div>
+                        <div className="bundle-mini-value">600 per month</div>
+                      </div>
+
+                      <div className="bundle-mini-card">
+                        <div className="bundle-mini-label">AI Credits</div>
+                        <div className="bundle-mini-value">300 credits included</div>
+                      </div>
+                    </div>
+                  </div>
+
                   <DetailPanel plan={selectedPlan} annual={annual} />
                 </div>
-              </div>
+              ) : (
+                <div className={`plans-inner ${activeTab === "addons" ? "addons-layout" : ""}`}>
+                  <div
+                    className={`plans-list-col ${activeTab === "addons" ? "addons-scroll" : ""}`}
+                    style={
+                      activeTab === "addons" && addonsDetailHeight
+                        ? { maxHeight: addonsDetailHeight }
+                        : {}
+                    }
+                  >
+                    {currentPlans.map((plan) => (
+                      <PlanListCard
+                        key={plan.id}
+                        plan={plan}
+                        annual={annual}
+                        selected={selectedPlan?.id === plan.id}
+                        onClick={() => setSelectedPlanId(plan.id)}
+                        compact={activeTab === "addons"}
+                      />
+                    ))}
+                  </div>
 
-              {/* COMPARISON TABLE — inserted here, before the first <hr> */}
+                  <div
+                    ref={activeTab === "addons" ? addonsDetailRef : null}
+                    className={`plans-detail-col ${activeTab === "addons" ? "addons-detail-sticky" : ""}`}
+                  >
+                    <DetailPanel plan={selectedPlan} annual={annual} />
+                  </div>
+                </div>
+              )}
+
               <ComparisonTable activeTab={activeTab} annual={annual} />
 
               <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
@@ -1163,7 +1474,6 @@ export default function Pricing() {
               <QuickStats />
             </div>
 
-            {/* RIGHT SIDEBAR — untouched */}
             <div className="right-sidebar-column">
               <div className="sidebar-sticky">
                 <div className="sidebar-shell">
