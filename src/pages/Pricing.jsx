@@ -384,10 +384,73 @@ const PLANS_BY_TAB = {
   ],
 };
 
+/* ─── COMPARISON TABLE DATA ─────────────────────────────── */
+const COMPARISON_BY_TAB = {
+  outreach: {
+    rows: [
+      { label: "Monthly price", starter: "$19/mo", pro: "$49/mo", agency: "$149/mo" },
+      { label: "Annual price", starter: "$13/mo", pro: "$34/mo", agency: "$104/mo" },
+      { label: "Sender accounts", starter: "1", pro: "3", agency: "Unlimited" },
+      { label: "LinkedIn accounts", starter: "0", pro: "0", agency: "0" },
+      { label: "Campaigns", starter: "Unlimited", pro: "Unlimited", agency: "Unlimited" },
+      { label: "Outreach automation", starter: true, pro: true, agency: true },
+      { label: "Custom flow builder", starter: true, pro: true, agency: true },
+      { label: "Automated follow-ups", starter: true, pro: true, agency: true },
+      { label: "Campaign analytics", starter: true, pro: true, agency: true },
+      { label: "Safe automation controls", starter: true, pro: true, agency: true },
+      { label: "White-label reports", starter: false, pro: false, agency: true },
+      { label: "Priority support & onboarding", starter: false, pro: false, agency: true },
+    ],
+    cols: ["Starter", "Pro", "Agency"],
+  },
+  scheduling: {
+    rows: [
+      { label: "Monthly price", starter: "$9/mo", pro: "$15/mo", agency: "$35/mo" },
+      { label: "Annual price", starter: "$6/mo", pro: "$10/mo", agency: "$24/mo" },
+      { label: "LinkedIn accounts", starter: "1", pro: "3", agency: "Unlimited" },
+      { label: "Post scheduling", starter: "Unlimited", pro: "Unlimited", agency: "Unlimited" },
+      { label: "Content calendar", starter: true, pro: true, agency: true },
+      { label: "Post analytics", starter: true, pro: true, agency: true },
+      { label: "Multi-account publishing", starter: true, pro: true, agency: true },
+      { label: "Team collaboration", starter: false, pro: true, agency: true },
+      { label: "White-label reports", starter: false, pro: false, agency: true },
+    ],
+    cols: ["Creator", "Growth", "Agency"],
+  },
+  bundle: {
+    rows: [
+      { label: "Monthly price", starter: "$59/mo", pro: null, agency: null },
+      { label: "Annual price", starter: "$41/mo", pro: null, agency: null },
+      { label: "LinkedIn sender account", starter: "1", pro: null, agency: null },
+      { label: "Scheduling accounts", starter: "1", pro: null, agency: null },
+      { label: "Lead credits / month", starter: "600", pro: null, agency: null },
+      { label: "AI credits", starter: "300", pro: null, agency: null },
+      { label: "Outreach automation", starter: true, pro: null, agency: null },
+      { label: "LinkedIn scheduling", starter: true, pro: null, agency: null },
+      { label: "AI assistant", starter: true, pro: null, agency: null },
+      { label: "Campaign analytics", starter: true, pro: null, agency: null },
+    ],
+    cols: ["Pro Suite"],
+  },
+  addons: {
+    rows: [
+      { label: "White Label Reports", starter: "$29/mo", pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "Extra Leads 1000", starter: "$17 one-time", pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "Extra Leads 500", starter: "$11 one-time", pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "Additional Senders +10", starter: "$135/mo", pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "Additional Senders +5", starter: "$75/mo", pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "Additional Sender +1", starter: "$17/mo", pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "Instant activation", starter: true, pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+      { label: "No plan change required", starter: true, pro: null, agency: null, extra1: null, extra2: null, extra3: null },
+    ],
+    cols: ["Add-On"],
+  },
+};
+
 /* ─── UI COMPONENTS ─────────────────────────────────────── */
 function BillingToggle({ annual, onToggle }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
       <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: !annual ? "#0a0a0a" : "#999" }}>
         Monthly
       </span>
@@ -416,23 +479,23 @@ function PlanListCard({ plan, annual, selected, onClick }) {
       className="plan-row"
       style={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         gap: 14,
         background: selected ? "#f7fae5" : "#fff",
         border: `1.5px solid ${selected ? "#c8f000" : "#e8e5de"}`,
-        borderRadius: 12,
-        padding: "16px 18px",
+        borderRadius: 14,
+        padding: "20px 20px",
         cursor: "pointer",
         transition: "all .18s",
         boxShadow: selected ? "0 0 0 2px rgba(200,240,0,0.2)" : "none",
       }}
     >
-      <div style={{ width: 44, height: 44, borderRadius: 10, background: "#eef6c4", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, color: "#8aad00" }}>
+      <div style={{ width: 46, height: 46, borderRadius: 11, background: selected ? "#d4f04a" : "#eef6c4", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#6a9500", marginTop: 2, transition: "background .18s" }}>
         ✦
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontWeight: 800, fontSize: 14.5, color: "#0a0a0a", marginBottom: 3 }}>
+        <div style={{ fontWeight: 800, fontSize: 15, color: "#0a0a0a", marginBottom: 6, display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
           {plan.name}
           {plan.badge && (
             <span
@@ -444,8 +507,6 @@ function PlanListCard({ plan, annual, selected, onClick }) {
                 textTransform: "uppercase",
                 padding: "2px 8px",
                 borderRadius: 100,
-                marginLeft: 7,
-                verticalAlign: "middle",
                 background: "#0a0a0a",
                 color: plan.badgeStyle === "addon" ? "#c8f000" : "#fff",
               }}
@@ -454,17 +515,16 @@ function PlanListCard({ plan, annual, selected, onClick }) {
             </span>
           )}
         </div>
-
-        <p style={{ fontSize: 12, color: "#666", lineHeight: 1.45, margin: 0, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <p style={{ fontSize: 12.5, color: "#666", lineHeight: 1.55, margin: 0 }}>
           {plan.desc}
         </p>
       </div>
 
-      <div style={{ textAlign: "right", flexShrink: 0 }}>
-        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 38, lineHeight: 1, color: "#0a0a0a" }}>
+      <div style={{ textAlign: "right", flexShrink: 0, paddingTop: 2 }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 42, lineHeight: 1, color: "#0a0a0a" }}>
           ${price}
         </div>
-        <div style={{ fontSize: 9.5, color: "#aaa", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+        <div style={{ fontSize: 9.5, color: "#aaa", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginTop: 2 }}>
           Per Month
         </div>
       </div>
@@ -477,40 +537,40 @@ function DetailPanel({ plan, annual }) {
   const price = annual ? plan.annual : plan.monthly;
 
   return (
-    <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 14, padding: "22px 20px" }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}>
+    <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 14, padding: "20px 18px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
         <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: "1.2px", textTransform: "uppercase", background: "#f4f2e8", color: "#666", border: "1.5px solid #e0ddd5", padding: "3px 10px", borderRadius: 100 }}>
           {plan.category}
         </span>
       </div>
 
-      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: "#0a0a0a", letterSpacing: 0.5, marginBottom: 5 }}>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "#0a0a0a", letterSpacing: 0.5, marginBottom: 4 }}>
         {plan.name}
       </div>
 
-      <p style={{ fontSize: 12.5, color: "#777", lineHeight: 1.55, marginBottom: 18 }}>
+      <p style={{ fontSize: 12, color: "#777", lineHeight: 1.5, marginBottom: 16 }}>
         {plan.subtitle}
       </p>
 
-      <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 9 }}>
+      <ul style={{ listStyle: "none", padding: 0, margin: "0 0 18px", display: "flex", flexDirection: "column", gap: 8 }}>
         {plan.features.map((f) => (
-          <li key={f} style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            <span style={{ width: 18, height: 18, borderRadius: "50%", background: "#eef6c4", border: "1.5px solid #b8e000", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <li key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ width: 17, height: 17, borderRadius: "50%", background: "#eef6c4", border: "1.5px solid #b8e000", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <svg width="7" height="6" viewBox="0 0 9 7" fill="none">
                 <path d="M1 3.5l2 2L8 1" stroke="#5a8a00" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#222" }}>{f}</span>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#222" }}>{f}</span>
           </li>
         ))}
       </ul>
 
-      <div style={{ borderTop: "1.5px dashed #e8e5de", paddingTop: 16 }}>
+      <div style={{ borderTop: "1.5px dashed #e8e5de", paddingTop: 14 }}>
         <div style={{ marginBottom: 10 }}>
           <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#aaa", marginBottom: 2 }}>
             No credit card required
           </div>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "#0a0a0a", lineHeight: 1 }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "#0a0a0a", lineHeight: 1 }}>
             ${price}/month
           </div>
         </div>
@@ -527,13 +587,185 @@ function DetailPanel({ plan, annual }) {
             fontSize: 11,
             letterSpacing: "1px",
             textTransform: "uppercase",
-            padding: "11px 0",
+            padding: "10px 0",
             borderRadius: 8,
             textDecoration: "none",
           }}
         >
           {plan.btnLabel} →
         </a>
+      </div>
+    </div>
+  );
+}
+
+/* ─── COMPARISON TABLE ──────────────────────────────────── */
+function ComparisonTable({ activeTab, annual }) {
+  const data = COMPARISON_BY_TAB[activeTab];
+  if (!data) return null;
+
+  const plans = PLANS_BY_TAB[activeTab] || [];
+  const { rows, cols } = data;
+
+  // For single-plan tabs (bundle, addons), filter rows to only those that have a value
+  const visibleRows = rows.filter((row) => {
+    const vals = ["starter", "pro", "agency"];
+    return vals.some((k) => row[k] !== null && row[k] !== undefined);
+  });
+
+  const colKeys = ["starter", "pro", "agency"].slice(0, cols.length);
+
+  const Check = () => (
+    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", background: "#eef6c4", border: "1.5px solid #b8e000" }}>
+      <svg width="8" height="7" viewBox="0 0 9 7" fill="none">
+        <path d="M1 3.5l2 2L8 1" stroke="#5a8a00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+
+  const Cross = () => (
+    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", background: "#f4f2e8", border: "1.5px solid #e0ddd5", color: "#ccc", fontSize: 13, fontWeight: 700 }}>
+      —
+    </span>
+  );
+
+  const renderCell = (val) => {
+    if (val === null || val === undefined) return <Cross />;
+    if (val === true) return <Check />;
+    if (val === false) return <Cross />;
+    return <span style={{ fontSize: 12.5, fontWeight: 700, color: "#0a0a0a" }}>{val}</span>;
+  };
+
+  // Popular col index
+  const popularIdx = plans.findIndex((p) => p.badge === "POPULAR");
+
+  return (
+    <div style={{ marginBottom: 36 }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16, gap: 8 }}>
+        <div>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, letterSpacing: 0.5, color: "#0a0a0a", lineHeight: 1, marginBottom: 4 }}>
+            Compare <span style={{ color: "#c8f000" }}>Plans</span>
+          </h2>
+          <p style={{ fontSize: 12, color: "#999" }}>Side-by-side feature breakdown for this category.</p>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 14, overflow: "hidden" }}>
+        {/* Column headers */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `minmax(160px, 1.6fr) ${cols.map(() => "1fr").join(" ")}`,
+            background: "#0a0a0a",
+            padding: "0 0",
+          }}
+        >
+          {/* Empty label cell */}
+          <div style={{ padding: "14px 20px", borderRight: "1px solid #1e1e1e" }}>
+            <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "#555" }}>Feature</span>
+          </div>
+          {cols.map((col, ci) => (
+            <div
+              key={col}
+              style={{
+                padding: "14px 12px",
+                textAlign: "center",
+                borderRight: ci < cols.length - 1 ? "1px solid #1e1e1e" : "none",
+                background: ci === popularIdx ? "#1a1f0a" : "transparent",
+                position: "relative",
+              }}
+            >
+              {ci === popularIdx && (
+                <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", background: "#c8f000", color: "#0a0a0a", fontSize: 8, fontWeight: 900, letterSpacing: "1px", textTransform: "uppercase", padding: "2px 8px", borderRadius: "0 0 5px 5px" }}>
+                  Popular
+                </div>
+              )}
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 17, color: ci === popularIdx ? "#c8f000" : "#fff", letterSpacing: 0.5 }}>
+                {col}
+              </div>
+              {plans[ci] && (
+                <div style={{ fontSize: 10, color: "#666", fontWeight: 600, marginTop: 1 }}>
+                  ${annual ? plans[ci].annual : plans[ci].monthly}/mo
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Rows */}
+        {visibleRows.map((row, ri) => {
+          const isEven = ri % 2 === 0;
+          return (
+            <div
+              key={row.label}
+              style={{
+                display: "grid",
+                gridTemplateColumns: `minmax(160px, 1.6fr) ${cols.map(() => "1fr").join(" ")}`,
+                background: isEven ? "#fff" : "#faf9f5",
+                borderTop: "1px solid #f0ede6",
+              }}
+            >
+              <div style={{ padding: "11px 20px", display: "flex", alignItems: "center", borderRight: "1px solid #f0ede6" }}>
+                <span style={{ fontSize: 12.5, color: "#444", fontWeight: 500 }}>{row.label}</span>
+              </div>
+              {colKeys.map((key, ci) => (
+                <div
+                  key={key}
+                  style={{
+                    padding: "11px 12px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRight: ci < cols.length - 1 ? "1px solid #f0ede6" : "none",
+                    background: ci === popularIdx ? (isEven ? "#fdfff0" : "#f9fce8") : "transparent",
+                  }}
+                >
+                  {renderCell(row[key])}
+                </div>
+              ))}
+            </div>
+          );
+        })}
+
+        {/* CTA row */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `minmax(160px, 1.6fr) ${cols.map(() => "1fr").join(" ")}`,
+            background: "#faf9f5",
+            borderTop: "1.5px solid #e8e5de",
+            padding: "14px 0",
+          }}
+        >
+          <div style={{ padding: "0 20px", display: "flex", alignItems: "center" }}>
+            <span style={{ fontSize: 11, color: "#aaa", fontWeight: 600 }}>14-day free trial · No credit card</span>
+          </div>
+          {cols.map((col, ci) => (
+            <div key={col} style={{ padding: "0 10px", display: "flex", alignItems: "center", justifyContent: "center", borderRight: ci < cols.length - 1 ? "1px solid #f0ede6" : "none" }}>
+              <a
+                href="#"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "center",
+                  background: ci === popularIdx ? "#c8f000" : "#0a0a0a",
+                  color: ci === popularIdx ? "#0a0a0a" : "#fff",
+                  fontWeight: 800,
+                  fontSize: 10,
+                  letterSpacing: "0.8px",
+                  textTransform: "uppercase",
+                  padding: "9px 0",
+                  borderRadius: 7,
+                  textDecoration: "none",
+                }}
+              >
+                {plans[ci]?.btnLabel || "Get Started"} →
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -548,7 +780,7 @@ function Sidebar({ annual, onToggle, selectedPlan, onSelectPlan }) {
   const siblingPlans = PLANS_BY_TAB[tabKey] || [];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 , width : "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}>
       <div style={{ background: "#fff", border: "1.5px solid #e0ddd5", borderRadius: 14, padding: "20px 18px" }}>
         <div style={{ marginBottom: 14 }}>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#aaa", marginBottom: 7 }}>
@@ -661,17 +893,11 @@ function Reviews() {
             </span>
             <div>
               <div style={{ fontSize: 13.5, color: "#333", lineHeight: 1.65, marginBottom: 5 }}>
-                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginRight: 3 }}>
-                  "
-                </span>
+                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginRight: 3 }}>"</span>
                 {text}
-                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginLeft: 3 }}>
-                  "
-                </span>
+                <span style={{ fontSize: 18, color: "#c8f000", lineHeight: 0, verticalAlign: "middle", marginLeft: 3 }}>"</span>
               </div>
-              <div style={{ fontSize: 11.5, color: "#aaa" }}>
-                — {name}, {date}
-              </div>
+              <div style={{ fontSize: 11.5, color: "#aaa" }}>— {name}, {date}</div>
             </div>
           </div>
         ))}
@@ -689,12 +915,8 @@ function Promises() {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {PROMISES.map(({ title, body }) => (
           <div key={title} style={{ background: "#fff", border: "1.5px solid #e8e5de", borderRadius: 11, padding: "20px 22px" }}>
-            <div style={{ fontWeight: 800, fontSize: 15, color: "#0a0a0a", marginBottom: 7 }}>
-              {title}
-            </div>
-            <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.7 }}>
-              {body}
-            </p>
+            <div style={{ fontWeight: 800, fontSize: 15, color: "#0a0a0a", marginBottom: 7 }}>{title}</div>
+            <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.7 }}>{body}</p>
           </div>
         ))}
       </div>
@@ -708,12 +930,8 @@ function FaqItem({ q, a }) {
   return (
     <div onClick={() => setOpen((o) => !o)} style={{ background: open ? "#f7fae5" : "#0a0a0a", border: `1.5px solid ${open ? "#c8f000" : "#1a1a1a"}`, borderRadius: 9, padding: "14px 16px", cursor: "pointer", transition: "background .2s, border-color .2s" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 700, color: open ? "#0a0a0a" : "#fff" }}>
-          {q}
-        </span>
-        <span style={{ width: 22, height: 22, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#c8f000" : "transparent", border: `1.5px solid ${open ? "#c8f000" : "#444"}`, color: open ? "#0a0a0a" : "#777", fontSize: 13, transform: open ? "rotate(45deg)" : "none", transition: "all .22s" }}>
-          +
-        </span>
+        <span style={{ fontSize: 13.5, fontWeight: 700, color: open ? "#0a0a0a" : "#fff" }}>{q}</span>
+        <span style={{ width: 22, height: 22, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: open ? "#c8f000" : "transparent", border: `1.5px solid ${open ? "#c8f000" : "#444"}`, color: open ? "#0a0a0a" : "#777", fontSize: 13, transform: open ? "rotate(45deg)" : "none", transition: "all .22s" }}>+</span>
       </div>
       {open && <p style={{ fontSize: 13.5, color: "#555", lineHeight: 1.65, marginTop: 10 }}>{a}</p>}
     </div>
@@ -724,12 +942,8 @@ function FaqSection() {
   return (
     <div style={{ marginBottom: 48 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 16, gap: 12, flexWrap: "wrap" }}>
-        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000" }}>
-          FAQs
-        </h2>
-        <a href="#" style={{ fontSize: 12.5, color: "#c8f000", textDecoration: "none", fontWeight: 700 }}>
-          See all FAQs →
-        </a>
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 0.5, color: "#c8f000" }}>FAQs</h2>
+        <a href="#" style={{ fontSize: 12.5, color: "#c8f000", textDecoration: "none", fontWeight: 700 }}>See all FAQs →</a>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         {FAQS.map(({ q, a }) => (
@@ -802,10 +1016,10 @@ export default function Pricing() {
           align-items: start;
         }
 
-       .right-sidebar-column {
-         position: relative;
-         align-self: stretch;
-         min-height: 100%;
+        .right-sidebar-column {
+          position: relative;
+          align-self: stretch;
+          min-height: 100%;
         }
 
         .sidebar-sticky {
@@ -818,20 +1032,34 @@ export default function Pricing() {
         }
 
         .plans-inner {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) 300px;
+          display: flex;
+          flex-direction: row;
           gap: 14px;
-          align-items: start;
-          margin-bottom: 44px;
+          align-items: flex-start;
+          margin-bottom: 32px;
+        }
+
+        .plans-list-col {
+          flex: 1 1 0;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .plans-detail-col {
+          flex: 0 0 300px;
+          width: 300px;
+          align-self: flex-start;
         }
 
         .tab-pill {
-          padding: 9px 16px;
+          padding: 8px 15px;
           border-radius: 100px;
           border: 1.5px solid #d0ccc4;
           background: transparent;
           color: #555;
-          font-size: 12.5px;
+          font-size: 12px;
           font-weight: 700;
           cursor: pointer;
           transition: all .18s;
@@ -848,13 +1076,18 @@ export default function Pricing() {
           background: #fafde8 !important;
         }
 
-      @media (max-width: 1100px) {
+        @media (max-width: 1100px) {
           .pricing-outer {
             grid-template-columns: 1fr !important;
           }
 
           .plans-inner {
-            grid-template-columns: 1fr !important;
+            flex-direction: column !important;
+          }
+
+          .plans-detail-col {
+            flex: 1 1 auto !important;
+            width: 100% !important;
           }
 
           .right-sidebar-column {
@@ -865,14 +1098,14 @@ export default function Pricing() {
             position: static !important;
             top: auto !important;
           }
-}
+        }
       `}</style>
 
       <div style={{ minHeight: "100vh", background: "#f4f2e8" }}>
         <Navbar />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "140px 32px 40px" }}>
-          <div style={{ marginBottom: 28 }}>
+          <div style={{ marginBottom: 24 }}>
             <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(2.8rem, 6vw, 5.5rem)" }}>
               Pick Your <span style={{ color: "#c8f000" }}>Growth</span> Plan
             </h1>
@@ -886,7 +1119,7 @@ export default function Pricing() {
             <div>
               <BillingToggle annual={annual} onToggle={() => setAnnual((a) => !a)} />
 
-              <div style={{ display: "flex", gap: 7, marginBottom: 16, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
                 {TABS.map((tab) => (
                   <button
                     key={tab.id}
@@ -898,8 +1131,9 @@ export default function Pricing() {
                 ))}
               </div>
 
+              {/* PLAN CARDS + DETAIL PANEL */}
               <div className="plans-inner">
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div className="plans-list-col">
                   {currentPlans.map((plan) => (
                     <PlanListCard
                       key={plan.id}
@@ -911,8 +1145,13 @@ export default function Pricing() {
                   ))}
                 </div>
 
-                <DetailPanel plan={selectedPlan} annual={annual} />
+                <div className="plans-detail-col">
+                  <DetailPanel plan={selectedPlan} annual={annual} />
+                </div>
               </div>
+
+              {/* COMPARISON TABLE — inserted here, before the first <hr> */}
+              <ComparisonTable activeTab={activeTab} annual={annual} />
 
               <hr style={{ border: "none", borderTop: "1.5px dashed #d8d4cc", marginBottom: 44 }} />
               <Reviews />
@@ -924,19 +1163,19 @@ export default function Pricing() {
               <QuickStats />
             </div>
 
-            {/* RIGHT SIDEBAR */}
-          <div className="right-sidebar-column">
-            <div className="sidebar-sticky">
-              <div className="sidebar-shell">
-                <Sidebar
-                  annual={annual}
-                  onToggle={() => setAnnual((a) => !a)}
-                  selectedPlan={selectedPlan}
-                  onSelectPlan={setSelectedPlanId}
-                />
+            {/* RIGHT SIDEBAR — untouched */}
+            <div className="right-sidebar-column">
+              <div className="sidebar-sticky">
+                <div className="sidebar-shell">
+                  <Sidebar
+                    annual={annual}
+                    onToggle={() => setAnnual((a) => !a)}
+                    selectedPlan={selectedPlan}
+                    onSelectPlan={setSelectedPlanId}
+                  />
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
 
